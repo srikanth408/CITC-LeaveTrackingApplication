@@ -64,7 +64,7 @@ public class ApproveLeaveMailSender implements MailSender {
 	public MimeMessage createMessage(LeaveBean leave, UserBean user, Session session) {
 		MimeMessage msg = new MimeMessage(session);
 		try {
-			msg.setSubject("Leave request approved by"+" "+ user.getFirstName() +" " + user.getMiddleName() +" " + user.getLastName());
+			msg.setSubject("Leave request "+ leave.getStatus()+ " by "+" "+ user.getFirstName() + " " + user.getLastName());
 			//msg.setText("Leave Approval requested from date " + leave.getFromDate() + " to date " + leave.getToDate() + " reason : " + leave.getReason());
 			StringBuilder email = new StringBuilder();
 			email.append("<html><body> <table style='border:2px solid black'>");

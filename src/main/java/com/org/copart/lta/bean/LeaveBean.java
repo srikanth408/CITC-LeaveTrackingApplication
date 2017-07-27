@@ -3,7 +3,8 @@ package com.org.copart.lta.bean;
 public class LeaveBean {
 
 	private String empId;
-	private String onsiteManager;
+	private String resourceManager;
+	private String employeeName;
 	private int leaveBl;
 	private int leavesApplied;
 	private String fromDate;
@@ -17,8 +18,7 @@ public class LeaveBean {
 	private int numOfCL;
 	private int numOfSL;
 	private int numOfPL;
-	
-	
+
 	public int getNumOfCL() {
 		return numOfCL;
 	}
@@ -30,7 +30,7 @@ public class LeaveBean {
 	public void setNumOfCL(int numOfCL) {
 		this.numOfCL = numOfCL;
 	}
-	
+
 	public int getNumOfSL() {
 		return numOfSL;
 	}
@@ -42,6 +42,7 @@ public class LeaveBean {
 	public void setNumOfSL(int numOfSL) {
 		this.numOfSL = numOfSL;
 	}
+
 	public int getNumOfPL() {
 		return numOfPL;
 	}
@@ -53,7 +54,7 @@ public class LeaveBean {
 	public void setNumOfPL(int numOfPL) {
 		this.numOfPL = numOfPL;
 	}
-	
+
 	public String getemployeeId() {
 		return employeeId;
 	}
@@ -61,6 +62,18 @@ public class LeaveBean {
 	public void setemployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
+	
+	public String getemployeeName() {
+		return employeeName;
+	}
+
+	public void setemployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+	
+	
+	
+	
 
 	public int getReqId() {
 		return reqId;
@@ -71,18 +84,18 @@ public class LeaveBean {
 	}
 
 	/**
-	 * @return the onsiteManager
+	 * @return the resourceManager
 	 */
-	public String getOnsiteManager() {
-		return onsiteManager;
+	public String getresourceManager() {
+		return resourceManager;
 	}
 
 	/**
-	 * @param onsiteManager
-	 *            the onsiteManager to set
+	 * @param resourceManager
+	 *            the resourceManager to set
 	 */
-	public void setOnsiteManager(String onsiteManager) {
-		this.onsiteManager = onsiteManager;
+	public void setresourceManager(String resourceManager) {
+		this.resourceManager = resourceManager;
 	}
 
 	/**

@@ -210,8 +210,8 @@ public class LTADaoImpl {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			String colname = requestType.equals("NA") ? "employeeId = ?"
 					: "approverId = ? AND status = 'Pending'";
-			String query = "select a.CL,a.SL,a.PL,b.requestId,b.employeeId,b.fromDate,b.toDate,b.status,b.reason,b.approverId,b.leaveType,b.leavesApplied from leaves b join employee a on a.empCode=b.employeeId WHERE "
-					+ colname;
+			String query = "select concat_ws(' ',a.firstName,a.lastName ) as employeeName,a.CL,a.SL,a.PL,b.requestId,b.employeeId,b.fromDate,b.toDate,b.status,b.reason,b.approverId,b.leaveType,b.leavesApplied, concat_ws(' ',c.firstName,c.lastName ) as managerName from leaves b join employee a on a.empCode=b.employeeId JOIN employee c on b.approverId = c.empCode WHERE "
+					+ colname + "order by requestId desc";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, empId);
 			ResultSet rs = stmt.executeQuery();
@@ -231,6 +231,8 @@ public class LTADaoImpl {
 				lb.setNumOfSL(rs.getInt("SL"));
 				lb.setNumOfPL(rs.getInt("PL"));
 				lb.setemployeeId(rs.getString("employeeId"));
+				lb.setemployeeName(rs.getString("employeeName"));
+				lb.setresourceManager(rs.getString("managerName"));
 				lbList.add(lb);
 
 			}
@@ -274,8 +276,8 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			String colname = requestType.equals("NA") ? "employeeId = ?"
-					: "approverId = ? AND status in ('Rejected','Approved','Cancelled')";
-			String query = "SELECT * FROM leaves WHERE " + colname;
+					: "approverId = ? AND status in ('Rejected','Approved','Cancelled') order by requestId desc";
+			String query = "select concat_ws(' ',a.firstName,a.lastName ) as employeeName,b.*, concat_ws(' ',c.firstName,c.lastName ) as managerName from leaves b join employee a on a.empCode=b.employeeId JOIN employee c on b.approverId = c.empCode WHERE " + colname;
 			PreparedStatement stmt = conn.prepareStatement(query);
 			stmt.setString(1, empId);
 			ResultSet rs = stmt.executeQuery();
@@ -292,6 +294,8 @@ public class LTADaoImpl {
 				lb.setStatus(rs.getString("status"));
 				lb.setReqId(rs.getInt("requestId"));
 				lb.setemployeeId(rs.getString("employeeId"));
+				lb.setemployeeName(rs.getString("employeeName"));
+				lb.setresourceManager(rs.getString("managerName"));
 				lbList.add(lb);
 
 			}

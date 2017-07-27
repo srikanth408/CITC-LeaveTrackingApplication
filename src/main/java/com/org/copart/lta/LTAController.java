@@ -82,7 +82,8 @@ public class LTAController {
 			ubRes.setHeader("Failure");
 		}
 		MailSender m = new LogindetailsMailSender();
-		m.sendMail(LoggedUser.getEmail(),new String[]{newUser.getEmail()},null,null,newUser);
+		//m.sendMail(LoggedUser.getEmail(),new String[]{newUser.getEmail()},null,null,newUser);
+		m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{newUser.getEmail()},null,null,newUser);
 
 		return ubRes;
 	}
@@ -113,7 +114,8 @@ public class LTAController {
 		UserBean manager = service.getUserDetailByID(ub.getResourceManager());
 		UserBean onSiteManager = service.getUserDetailByID(ub.getOnsiteManager());
 		MailSender m = new ApplyLeaveMailSender();
-		m.sendMail(ub.getEmail(),new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
+		//m.sendMail(ub.getEmail(),new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
+		m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
 
 		return ubRes;
 	}
@@ -166,13 +168,14 @@ public class LTAController {
 			service.setApproveRejectStatus(reqId, status);
 			lb.setHeader("Ok");
 			LeaveBean leave = service.getLeaveDeatails(reqId);
-			UserBean manager = service.getUserDetailByID(ub
-					.getResourceManager());
-			UserBean onSiteManager = service.getUserDetailByID(ub
-					.getOnsiteManager());
+			UserBean user = service.getUserDetailByID(leave.getemployeeId());
+			//UserBean manager = service.getUserDetailByID(ub.getResourceManager());
+			UserBean onSiteManager = service.getUserDetailByID(user.getOnsiteManager());
+			
 			MailSender m = new ApproveLeaveMailSender();
-			m.sendMail(manager.getEmail(), new String[] { ub.getEmail() },
-					new String[] { onSiteManager.getEmail() }, leave, ub);
+			//m.sendMail(ub.getEmail(), new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
+			
+			m.sendMail("srikanthreddy.kaipu@copart.com", new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
 		} catch (Exception e) {
 			lb.setHeader("Failed");
 		}
