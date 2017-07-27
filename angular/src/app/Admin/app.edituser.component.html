@@ -1,0 +1,72 @@
+<ul class="nav nav-tabs">
+    <li><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
+    <li><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
+    <li class="active"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+</ul>
+<br>
+<div class="panel panel-primary">
+    <div class="panel-heading">Welcome to Employees list of Copart</div>
+    <div class="panel-body table-responsive mytable">
+        <table class="table table-striped" id="mytable">
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th style="table-layout:fixed;width:13%;"><input class="form-control" type="search" [(ngModel)]="userFilter.empCode" placeholder="Employee Code"></th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Resource Manager Id</th>
+                    <th>Onsite Manager Id</th>
+                    <th>Director</th>
+                    <th>Phone</th>
+                    <th>Department</th>
+                    <th>User Role</th>
+                    <th>Edit/Save/Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employees of employee | filterBy: userFilter;let i = index;">
+                    <td>{{i+1}}</td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.empCode}}</span>
+                        <input type="text" [(ngModel)]="employees.empCode" value={{employees.empCode}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.firstName}}</span>
+                        <input type="text" [(ngModel)]="employees.firstName" value={{employees.firstName}} *ngIf="editedIndex === i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.middleName}}</span>
+                        <input type="text" [(ngModel)]="employees.middleName" value={{employees.middleName}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.lastName}}</span>
+                        <input type="text" [(ngModel)]="employees.lastName" value={{employees.lastName}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.email}}</span>
+                        <input type="text" [(ngModel)]="employees.email" value={{employees.email}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.resourceManager}}</span>
+                        <input type="text" [(ngModel)]="employees.resourceManager" value={{employees.resourceManager}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.onsiteManager}}</span>
+                        <input type="text" [(ngModel)]="employees.onsiteManager" value={{employees.onsiteManager}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.director}}</span>
+                        <input type="text" [(ngModel)]="employees.director" value={{employees.director}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.phone}}</span>
+                        <input type="text" [(ngModel)]="employees.phone" value={{employees.phone}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.dept}}</span>
+                        <input type="text" [(ngModel)]="employees.dept" value={{employees.dept}} *ngIf="editedIndex===i"></td>
+                    <td>
+                        <span *ngIf="editedIndex !== i">{{employees.userRole}}</span>
+                        <input type="text" [(ngModel)]="employees.userRole" value={{employees.userRole}} *ngIf="editedIndex===i"></td>
+                    <button *ngIf="Edit" (click)="edit(employees,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
+                    <button *ngIf="editedIndex === i && Save" (click)="save(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                    <button (click)="delete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

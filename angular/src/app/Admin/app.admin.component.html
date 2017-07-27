@@ -1,0 +1,84 @@
+<ul class="nav nav-tabs">
+    <li class="active"><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
+    <li><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
+    <li><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+</ul>
+<br>
+<div class="panel panel-primary">
+    <div class="panel-heading">Leave requests </div>
+    <div class="panel-body table-responsive mytable">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th>Employee Name</th>
+                    <th>Resource Manager Name</th>
+                    <th>CL's</th>
+                    <th>SL's</th>
+                    <th>PL's </th>
+                    <th>Leaves applied</th>
+                    <th>From Date</th>
+                    <th>To date</th>
+                    <th>Leave Type</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employees of employee;let i = index;">
+                    <td>{{i+1}}</td>
+                    <td>{{employees.employeeName}}</td>
+                    <td>{{employees.resourceManager}}</td>
+                    <td>{{employees.numOfCL}}</td>
+                    <td>{{employees.numOfSL}}</td>
+                    <td>{{employees.numOfPL}}</td>
+                    <td>{{employees.leavesApplied}}</td>
+                    <td>{{employees.fromDate}}</td>
+                    <td>{{employees.toDate}}</td>
+                    <td>{{employees.leaveType}}</td>
+                    <td class="reason">{{employees.reason}}</td>
+                    <td>{{employees.status}}</td>
+                    <button type="button" class="btn btn-mini btn-success" (click)="approveRejectAction(i, 'Approved')"><span class="glyphicon glyphicon-ok"></span></button>
+                        <button type="button" class="btn btn-mini btn-danger" (click)="approveRejectAction(i, 'Rejected')"><span class="glyphicon glyphicon-remove"></span></button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+<div class="panel panel-primary">
+    <div class="panel-heading">Leave History</div>
+    <div class="panel-body table-responsive mytable">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sno</th>
+                    <th style="table-layout:fixed;width:13%;"><input class="form-control" type="search" [(ngModel)]="userFilter.employeeName" placeholder="Employee Name"></th>
+                    <th>Resource Manager Name</th>
+                    <th>Leaves applied</th>
+                    <th>From Date</th>
+                    <th>To date</th>
+                    <th>Leave Type</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let History of leaveHistory | filterBy: userFilter;let i = index;">
+                    <td>{{i+1}}</td>
+                    <td>{{History.employeeName}}</td>
+                    <td>{{History.resourceManager}}</td>
+                    <td>{{History.leavesApplied}}</td>
+                    <td>{{History.fromDate}}</td>
+                    <td>{{History.toDate}}</td>
+                    <td>{{History.leaveType}}</td>
+                    <td class="reason">{{History.reason}}</td>
+                    <td>{{History.status}}</td>
+                    <button type="button" class="btn btn-mini btn-danger" (click)="cancelLeaveAction(i, 'Cancelled')"><span class="glyphicon glyphicon-remove"></span></button>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

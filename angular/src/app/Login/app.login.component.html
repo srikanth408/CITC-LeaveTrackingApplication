@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Welcome to login Portal of Copart</div>
+                <div class=" panel-body">
+                    <form #lgForm="ngForm" (ngSubmit)="loginSubmit(lgForm.value)">
+                        <div class="input-group form-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" name="email" ngModel class="form-control" placeholder="Email" required />
+                        </div>
+                        <div class="input-group form-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                           <input type="password" name="password" ngModel class="form-control" placeholder="Password" required  />
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="action">Login</button>
+                        <span>{{errorMsg}}</span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+

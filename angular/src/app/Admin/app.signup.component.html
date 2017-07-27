@@ -1,0 +1,155 @@
+<ul class="nav nav-tabs">
+    <li><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
+    <li class="active"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
+    <li><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+</ul>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Add New user here </div>
+                <div class="panel-body">
+                    <form name="myform" #userForm="ngForm" (ngSubmit)="onSubmit(userForm.value,userForm)" novalidate>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" #fnameRef="ngModel" pattern="^[A-Z][a-z]*" required class="form-control" name="firstName" ngModel>
+                                    <div *ngIf="fnameRef.errors &&(fnameRef.dirty||fnameRef.touched)" class="alert alert-danger">
+                                        <div [hidden]="!fnameRef.errors.required">
+                                            Please enter your Name
+                                        </div>
+                                        <div [hidden]="!fnameRef.errors.pattern">
+                                            please enter name with starting catpitol letter
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Middle Name</label>
+                                    <input type="text" #middleRef="ngModel" pattern="^[A-Z][a-z]*" class="form-control" name="middleName" ngModel>
+                                    <div *ngIf="middleRef.errors &&(middleRef.dirty||middleRef.touched)" class="alert alert-danger">
+                                        <div [hidden]="!middleRef.errors.required">
+                                            Please enter your last Name
+                                        </div>
+                                        <div [hidden]="!middleRef.errors.pattern">
+                                            please enter name with starting catpitol letter
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" #lnameRef="ngModel" pattern="^[A-Z][a-z]*" required class="form-control" name="lastName" ngModel>
+                                    <div *ngIf="lnameRef.errors &&(lnameRef.dirty||lnameRef.touched)" class="alert alert-danger">
+                                        <div [hidden]="!lnameRef.errors.required">
+                                            Please enter your last Name
+                                        </div>
+                                        <div [hidden]="!lnameRef.errors.pattern">
+                                            please enter name with starting catpitol letter
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" #emailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
+                                        name="email" ngModel>
+                                    <div *ngIf="emailRef.errors &&(emailRef.dirty)" class="alert alert-danger">
+                                        <div [hidden]="!emailRef.errors.required">
+                                            please enter your email address
+                                        </div>
+                                        <div [hidden]="!emailRef.errors.pattern">
+                                            please enter valid email with '@' and '.'
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Emp Code</label>
+                                    <input type="text" #empRef="ngModel" pattern="^[0-9]{4}$" required class="form-control" name="empCode" ngModel>
+                                    <div *ngIf="empRef.errors &&(empRef.dirty)" class="alert alert-danger">
+                                        <div [hidden]="!empRef.errors.required">
+                                            please enter your emp code
+                                        </div>
+                                        <div [hidden]="!empRef.errors.pattern">
+                                            please enter empcode with starting number between 0 to 9 and max 4
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input #phoneRef="ngModel" type="text" pattern="^[0-9]{10}$" required class="form-control" name="phone" ngModel>
+                                    <div *ngIf="phoneRef.errors &&(phoneRef.dirty)" class="alert alert-danger">
+                                        <div [hidden]="!phoneRef.errors.required">
+                                            please enter your phone number
+                                        </div>
+                                        <div [hidden]="!phoneRef.errors.pattern">
+                                            please enter 10 digit phone number
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=col-sm-6>
+                                <div class="form-group">
+                                    <label>User Role</label>
+                                    <select ngModel name="userRole" class="form-control" required (change)="onchange($event.target.value)">
+                                <option value="2">On-site Manager</option>
+                                <option value="1">Admin</option>
+                                <option value="0">Employee</option>
+                                   </select>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class=col-sm-6>
+                                <div class="form-group">
+                                    <label>Resource Manager</label>
+                                    <select name="resourceManager" ngModel class="form-control" required (change)="onChanged($event.target.value)">
+                                            <option *ngFor="let p of managerslist" value={{p.empCode}}>{{p.firstName}}</option>
+                                         </select>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Department</label>
+                                    <input class="form-control" name="dept" required ngModel [(ngModel)]="selectedPerson.dept" readonly>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class=col-sm-6>
+                                <div class="form-group">
+                                    <label>Onsite Manager</label>
+                                    <select class="form-control" name="onsiteManager" required ngModel>
+                                            <option *ngFor="let p of onsitemanagerslist" value={{p.empCode}}>{{p.firstName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Director</label>
+                                    <input type="text" #dirRef="ngModel" class="form-control" name="director" required ngModel pattern="^[A-Z][a-z]*">
+                                    <div *ngIf="dirRef.errors &&(dirRef.dirty||dirRef.touched)" class="alert alert-danger">
+                                        <div [hidden]="!dirRef.errors.required">
+                                            Please enter your Director Name
+                                        </div>
+                                        <div [hidden]="!dirRef.errors.pattern">
+                                            please enter name with starting catpitol letter
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <button [disabled]="!userForm.form.valid" type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

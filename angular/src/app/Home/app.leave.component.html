@@ -1,0 +1,119 @@
+<ul class="nav nav-tabs">
+    <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
+    <li *ngIf="isAdmin"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li class="active"><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
+    <li *ngIf="isAdmin"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+</ul>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Welcome to Leave Tracking Application of Copart</div>
+            <div class="panel-body table-responsive mytable">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Resource Manager</th>
+                            <th>Onsite Manager</th>
+                            <th>CL's</th>
+                            <th>SL's</th>
+                            <th>PL's</th>
+                            <th>No of Leaves</th>
+                            <th>Director</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{employees.resourceManagerName}}</td>
+                            <td>{{employees.onsiteManagerName}}</td>
+                            <td>{{employees.numOfCL}}</td>
+                            <td>{{employees.numOfSL}}</td>
+                            <td>{{employees.numOfPL}}</td>
+                            <td>{{employees.numOfLeaves}}</td>
+                            <td>{{employees.director}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Leave history</div>
+            <div class="panel-body table-responsive mytable">
+                <table class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>Fromdate</th>
+                            <th>Todate</th>
+                            <th>No of days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of leaveHistory">
+                            <td>{{item.leaveType}}</td>
+                            <td>{{item.fromDate}}</td>
+                            <td>{{item.toDate}}</td>
+                            <td>{{item.leavesApplied}}</td>
+                            <td style="table-layout:fixed;width:25%;">{{item.reason}}</td>
+                            <td>{{item.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-primary">
+    <div class="panel-heading">Leave application form </div>
+    <div class="panel-body">
+        <form #leaveform="ngForm" (ngSubmit)="OnSubmit(leaveform.value, leaveform)" novalidate>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div>
+                                <label>From Date: </label>
+                                <input type="date" ngModel name="fromDate" class="form-control" required [(ngModel)]="leave.fromdate" (change)="onChange($event.target.value)">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div>
+                                <label>To Date: </label> <span style="color:red; font-size:14px;">{{todate_errorMsg}}</span>
+                                <input type="date" ngModel name="toDate" class="form-control" required [(ngModel)]="leave.todate" (change)="onChange($event.target.value)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div>
+                                <label>Leave type: </label>
+                                <select ngModel name="leaveType" class="form-control" required [(ngModel)]="leave.leavetype" (change)="onChange($event.target.value)"> 
+                                    <option disabled>Select Leave type</option>
+                                    <option value="CL">Casual leave</option>
+                                    <option value="SL">Sick Leave</option>
+                                    <option value="PL">Planed Leave</option>
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div>
+                                <label>No of days</label><span style="color:red; font-size:14px;">{{leaves_errorMsg}}</span>
+                                <input ngModel name="leavesApplied" class="form-control" required [(ngModel)]="leaves" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label>Reason for Leave</label>
+                    <textarea class="form-control" rows="4" cols="10" style="width:100%;" ngModel name="reason" required></textarea>
+                </div>
+            </div>
+            <br>
+            <button [disabled]="!leaveform.form.valid || valid" type="submit" class="btn btn-primary pull-right">Submit</button>
+        </form>
+    </div>
+</div>
