@@ -6,17 +6,17 @@ import { EmpDataService } from '../app.model';
 
 @Component({
     selector: 'login',
-    templateUrl: '/app.login.component.html',
+    templateUrl: './app.login.component.html',
     providers: [EmployeedataService]
 
 
 })
 
 export class LoginComponent implements OnInit {
-    private employees: any = {};
+    public employees: any = {};
     public errorMsg: any = [];
 
-    constructor(private router: Router, private _service: EmployeedataService, private empDataSr: EmpDataService) { }
+    constructor(public router: Router, public _service: EmployeedataService, public empDataSr: EmpDataService) { }
 
     ngOnInit() {
 

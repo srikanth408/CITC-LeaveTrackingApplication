@@ -9,27 +9,27 @@ import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 
 
 @Component({
     selector: 'signup',
-    templateUrl: '/app.signup.component.html',
+    templateUrl: './app.signup.component.html',
     providers: [EmployeedataService],
 
 })
 
 export class SignupComponent {
-    /* private manager_list: any[] = [
+    /* public manager_list: any[] = [
          { name: 'Gokul Janarthanan', Id: '0012', department: "QA" },
          { name: 'Rajdeep Biswas', Id: '0013', department: "IT" },
          { name: 'Venkat', Id: '0014', department: "Developement" }
      ];*/
-    private selectedPerson: any = {};
-    private showId: boolean = true;
-    private managerslist: any;
-    private onsitemanagerslist: any;
+    public selectedPerson: any = {};
+    public showId: boolean = true;
+    public managerslist: any;
+    public onsitemanagerslist: any;
 
 
-    constructor(private route: Router,
-        private _restfull: EmployeedataService,
-        private empDataSr: EmpDataService,
-        private toasterService: ToasterService) { }
+    constructor(public route: Router,
+        public _restfull: EmployeedataService,
+        public empDataSr: EmpDataService,
+        public toasterService: ToasterService) { }
 
     ngOnInit() {
 

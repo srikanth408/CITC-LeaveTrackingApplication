@@ -7,23 +7,23 @@ import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 
 
 
 @Component({
-  templateUrl: '/app.edituser.component.html',
+  templateUrl: './app.edituser.component.html',
   providers: [EmployeedataService],
 
 })
 
 export class EdituserComponent {
 
-  private employee: any[];
-  private editedIndex: boolean;
-  private Save: boolean = false;
-  private Edit: boolean = true;
+  public employee: any[];
+  public editedIndex: boolean;
+  public Save: boolean = false;
+  public Edit: boolean = true;
   userFilter: any = { empCode: '' };
 
-  constructor(private _service: EmployeedataService,
-    private route: Router,
-    private empDataSr: EmpDataService,
-    private toasterService: ToasterService) { }
+  constructor(public _service: EmployeedataService,
+    public route: Router,
+    public empDataSr: EmpDataService,
+    public toasterService: ToasterService) { }
   ngOnInit() {
     this.getEmployeeData();
 

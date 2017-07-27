@@ -12,31 +12,31 @@ import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 
 
 @Component({
     selector: 'leave',
-    templateUrl: '/app.leave.component.html',
+    templateUrl: './app.leave.component.html',
     providers: [EmployeedataService, holidayService]
 
 })
 
 export class LeaveComponent {
-    private leaveHistory: any;
+    public leaveHistory: any;
     public employees: any = {};
-    private data: Observable<any>;
+    public data: Observable<any>;
     newEntry: any = {};
-    private leave: any = {};
-    private leaves;
-    private holidays: any;
-    private empid: string;
-    private reqType: string = "NA";
-    private todate_errorMsg: any;
-    private leaves_errorMsg: any;
-    private valid: boolean = false;
+    public leave: any = {};
+    public leaves;
+    public holidays: any;
+    public empid: string;
+    public reqType: string = "NA";
+    public todate_errorMsg: any;
+    public leaves_errorMsg: any;
+    public valid: boolean = false;
 
 
-    constructor(private routes: Router,
-        private _service: EmployeedataService,
-        private empDataSr: EmpDataService,
-        private _hservice: holidayService,
-        private toasterService: ToasterService) {
+    constructor(public routes: Router,
+        public _service: EmployeedataService,
+        public empDataSr: EmpDataService,
+        public _hservice: holidayService,
+        public toasterService: ToasterService) {
 
 
     }

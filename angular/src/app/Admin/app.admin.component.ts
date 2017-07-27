@@ -7,21 +7,21 @@ import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 
 
 
 @Component({
-    templateUrl: '/app.admin.component.html',
+    templateUrl: './app.admin.component.html',
     providers: [EmployeedataService]
 })
 
 export class AdminComponent {
-    private employee: any;
-    private editedIndex: boolean;
-    private EmployeeId: any = {};
-    private leaveHistory: any;
+    public employee: any;
+    public editedIndex: boolean;
+    public EmployeeId: any = {};
+    public leaveHistory: any;
     userFilter: any = { employeeName: '' };
 
 
-    constructor(private _service: EmployeedataService,
-        private empDataSr: EmpDataService,
-        private toasterService: ToasterService) {
+    constructor(public _service: EmployeedataService,
+        public empDataSr: EmpDataService,
+        public toasterService: ToasterService) {
 
     }
     ngOnInit() {

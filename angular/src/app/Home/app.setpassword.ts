@@ -8,16 +8,20 @@ import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 
 
 @Component({
     selector: 'set-password',
-    templateUrl: '/app.setpassword.html',
+    templateUrl: './app.setpassword.html',
     providers: [EmployeedataService],
 
 })
 
 
 export class SetPasswordComponent {
-    constructor(private _restfull: EmployeedataService,
-        private empDataSr: EmpDataService,
-        private toasterService: ToasterService) {
+
+    public oldpassword:any;
+    public password:any;
+    public repeatPassword:any;
+    constructor(public _restfull: EmployeedataService,
+        public empDataSr: EmpDataService,
+        public toasterService: ToasterService) {
 
     }
 

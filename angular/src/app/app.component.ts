@@ -20,7 +20,7 @@ export class AppComponent {
     limit: 1
   });
  
-  constructor(private router: Router, private empDataSr: EmpDataService, private _service: EmployeedataService, private toasterService: ToasterService) {
+  constructor(public router: Router, public empDataSr: EmpDataService, public _service: EmployeedataService, public toasterService: ToasterService) {
 
 
 }
