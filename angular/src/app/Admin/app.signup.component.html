@@ -9,50 +9,26 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="panel panel-primary">
-                <div class="panel-heading">Add New user here </div>
+                <div class="panel-heading">Add New User Here </div>
                 <div class="panel-body">
                     <form name="myform" #userForm="ngForm" (ngSubmit)="onSubmit(userForm.value,userForm)" novalidate>
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" #fnameRef="ngModel" pattern="^[A-Z][a-z]*" required class="form-control" name="firstName" ngModel>
-                                    <div *ngIf="fnameRef.errors &&(fnameRef.dirty||fnameRef.touched)" class="alert alert-danger">
-                                        <div [hidden]="!fnameRef.errors.required">
-                                            Please enter your Name
-                                        </div>
-                                        <div [hidden]="!fnameRef.errors.pattern">
-                                            please enter name with starting catpitol letter
-                                        </div>
-                                    </div>
+                                    <input type="text" #fnameRef="ngModel" required class="form-control" name="firstName" ngModel>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Middle Name</label>
-                                    <input type="text" #middleRef="ngModel" pattern="^[A-Z][a-z]*" class="form-control" name="middleName" ngModel>
-                                    <div *ngIf="middleRef.errors &&(middleRef.dirty||middleRef.touched)" class="alert alert-danger">
-                                        <div [hidden]="!middleRef.errors.required">
-                                            Please enter your last Name
-                                        </div>
-                                        <div [hidden]="!middleRef.errors.pattern">
-                                            please enter name with starting catpitol letter
-                                        </div>
-                                    </div>
+                                    <input type="text" #middleRef="ngModel" class="form-control" name="middleName" ngModel>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" #lnameRef="ngModel" pattern="^[A-Z][a-z]*" required class="form-control" name="lastName" ngModel>
-                                    <div *ngIf="lnameRef.errors &&(lnameRef.dirty||lnameRef.touched)" class="alert alert-danger">
-                                        <div [hidden]="!lnameRef.errors.required">
-                                            Please enter your last Name
-                                        </div>
-                                        <div [hidden]="!lnameRef.errors.pattern">
-                                            please enter name with starting catpitol letter
-                                        </div>
-                                    </div>
+                                    <input type="text" #lnameRef="ngModel" required class="form-control" name="lastName" ngModel>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -130,18 +106,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div *ngIf="showId" class="col-sm-6">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Director</label>
-                                    <input type="text" #dirRef="ngModel" class="form-control" name="director" required ngModel pattern="^[A-Z][a-z]*">
-                                    <div *ngIf="dirRef.errors &&(dirRef.dirty||dirRef.touched)" class="alert alert-danger">
-                                        <div [hidden]="!dirRef.errors.required">
-                                            Please enter your Director Name
-                                        </div>
-                                        <div [hidden]="!dirRef.errors.pattern">
-                                            please enter name with starting catpitol letter
-                                        </div>
-                                    </div>
+                                    <input type="text" #dirRef="ngModel" class="form-control" name="director" required ngModel>
                                 </div>
                             </div>
                         </div>

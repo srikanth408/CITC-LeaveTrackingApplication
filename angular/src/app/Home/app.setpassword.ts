@@ -19,6 +19,9 @@ export class SetPasswordComponent {
     public oldpassword:any;
     public password:any;
     public repeatPassword:any;
+
+
+
     constructor(public _restfull: EmployeedataService,
         public empDataSr: EmpDataService,
         public toasterService: ToasterService) {

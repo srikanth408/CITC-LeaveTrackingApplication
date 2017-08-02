@@ -20,7 +20,7 @@ public class DBConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException ex) {
-			// Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,
+			// Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,s
 			// null, ex);
 		}
 	}

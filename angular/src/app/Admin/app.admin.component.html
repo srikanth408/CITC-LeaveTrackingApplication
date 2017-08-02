@@ -6,7 +6,7 @@
 </ul>
 <br>
 <div class="panel panel-primary">
-    <div class="panel-heading">Leave requests </div>
+    <div class="panel-heading">Leave Requests </div>
     <div class="panel-body table-responsive mytable">
         <table class="table table-striped">
             <thead>
@@ -63,6 +63,7 @@
                     <th>Leave Type</th>
                     <th>Reason</th>
                     <th>Status</th>
+                    <th>Cancel</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,7 +77,7 @@
                     <td>{{History.leaveType}}</td>
                     <td class="reason">{{History.reason}}</td>
                     <td>{{History.status}}</td>
-                    <button type="button" class="btn btn-mini btn-danger" (click)="cancelLeaveAction(i, 'Cancelled')"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="btn btn-mini btn-danger" (click)="cancelLeaveAction(i, 'Cancelled')">Cancel</button>
                 </tr>
             </tbody>
         </table>

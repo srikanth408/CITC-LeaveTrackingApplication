@@ -4,20 +4,24 @@
             <div class="navbar-header">
                 <img src="dist/assets/images/Copart.png" style="width:150px;height:50px;">
             </div>
-            <div *ngIf="isLoggedIn" class="dropdown nav navbar-nav navbar-right">
-                <button class="dropbtn btnClass">{{name}}
+            <div *ngIf="isLoggedIn">
+                <ul class="nav navbar-nav">
+                    <li><a (click)="Home()"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                </ul>
+                <div class="dropdown nav navbar-nav navbar-right">
+                    <button class="dropbtn btnClass">{{name}}
                 <span class="glyphicon glyphicon-user"></span></button>
-                <div class="dropdown-content">
-                    <a (click)="Home()"><span class="glyphicon glyphicon-home"></span> Home</a>
-                    <a (click)="setpassword()"><span class="glyphicon glyphicon-wrench"></span> Change Password </a>
-                    <a (click)="logout()"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                    <div class="dropdown-content">
+                        <a (click)="setpassword()"><span class="glyphicon glyphicon-wrench"></span> Change Password </a>
+                        <a (click)="logout()"><span class="glyphicon glyphicon-off"></span> Logout</a>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 </div>
-<div class="reload-bg" [hidden]="!reload"><img class="reload" src="dist/assets/images/spinner.gif"/></div>
+<div class="reload-bg" [hidden]="!reload"><img class="reload" src="dist/assets/images/spinner.gif" /></div>
 <div class="my-container">
-     <toaster-container [toasterconfig]="config1"></toaster-container>
+    <toaster-container [toasterconfig]="config1"></toaster-container>
     <router-outlet></router-outlet>
 </div>

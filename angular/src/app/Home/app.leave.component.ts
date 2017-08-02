@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { holidayService } from '../app.holidayservice';
 import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 'angular2-toaster';
+import { IMyDpOptions } from 'mydatepicker';
 
 
 
@@ -30,7 +31,9 @@ export class LeaveComponent {
     public todate_errorMsg: any;
     public leaves_errorMsg: any;
     public valid: boolean = false;
-
+    public totleavesOfCL = 0;
+    public totleavesOfSL = 0;
+    public totleavesOfPL = 0;
 
     constructor(public routes: Router,
         public _service: EmployeedataService,
@@ -41,24 +44,24 @@ export class LeaveComponent {
 
     }
 
-    ngOnInit() {
-        //this.data =  new Observable<EmpDataService>((observer: Observer<EmpDataService>) =>{
-        this.employees = this.empDataSr.getEmpInfo();
-        //});
+    private myDatePickerOptions: IMyDpOptions = {
+        // other options...
+        dateFormat: 'mm/dd/yyyy',
+    };
 
-        //     let subscription = this.data.subscribe(
-        //       value => {this.employees = value; console.log(value)}
-        //   );
+    ngOnInit() {
+        this.employees = this.empDataSr.getEmpInfo();
         this.getholidaysList();
         this.getleavesHistory();
-
 
     }
 
 
     OnSubmit(value: any, opt: any) {
-        value.fromDate = this.getformatdate(value.fromDate);
-        value.toDate = this.getformatdate(value.toDate);
+        value.fromDate = this.leave.fromdate.formatted;
+        value.toDate = this.leave.todate.formatted;
+        // value.fromDate = this.getformatdate(value.fromDate);
+        //value.toDate = this.getformatdate(value.toDate);
         this.empDataSr.loading = true;
         this._service.LeaveRetur(value)
             .subscribe((res) => {
@@ -99,7 +102,26 @@ export class LeaveComponent {
 
     getleavesHistory() {
         this._service.getLeaves(this.employees.empCode, this.reqType)
-            .subscribe(data => this.leaveHistory = data);
+            .subscribe(data => {
+                this.leaveHistory = data;
+
+
+                for (var i = 0; i < this.leaveHistory.length; i++) {
+                    if (this.leaveHistory[i].status === "Pending" && this.leaveHistory[i].leaveType === "CL") {
+                        this.totleavesOfCL = this.totleavesOfCL + this.leaveHistory[i].leavesApplied;
+                    }
+                    else if (this.leaveHistory[i].status === "Pending" && this.leaveHistory[i].leaveType === "SL") {
+                        this.totleavesOfSL = this.totleavesOfSL + this.leaveHistory[i].leavesApplied;
+                    }
+                    else if (this.leaveHistory[i].status === "Pending" && this.leaveHistory[i].leaveType === "PL") {
+                        this.totleavesOfPL = this.totleavesOfPL + this.leaveHistory[i].leavesApplied;
+                    }
+
+                }
+
+
+            });
+
 
     }
     getholidaysList() {
@@ -110,33 +132,42 @@ export class LeaveComponent {
     get isAdmin() {
         return this.empDataSr.isAdmin;
     }
-    onChange(value: any) {
-        var fromdate = this.leave.fromdate;
-        var todate = this.leave.todate;
+    onChange(value, dtType) {
+        var _fromdate = this.leave.fromdate ? this.leave.fromdate.formatted : '';
+        var _todate = this.leave.todate ? this.leave.todate.formatted : '';
+        if (dtType === 'F') {
+            _fromdate = value.formatted;
+        } else if (dtType === 'T') {
+            _todate = value.formatted;
+        }
         var leavetype = this.leave.leavetype;
-        fromdate = new Date(fromdate);
-        todate = new Date(todate);
+        var fromdate = new Date(_fromdate);
+        var todate = new Date(_todate);
 
         let date1_unixtime = fromdate.getTime() / 1000;
         let date2_unixtime = todate.getTime() / 1000;
         var timeDifference = date2_unixtime - date1_unixtime;
         var timeDifferenceInHours = timeDifference / 60 / 60;
         var timeDifferenceInDays = timeDifferenceInHours / 24 + 1;
+
+
+
+
         if (leavetype === "CL") {
             this.leaves = timeDifferenceInDays;
         } else if ((leavetype === "SL") || (leavetype === "PL")) {
             var month = fromdate.getMonth() + 1;
-            month = month < 10 ? '0' + month : month;
+            var monthStr = month < 10 ? '0' + month : month;
             var day = fromdate.getDate();
-            day = day < 10 ? '0' + day : day;
+            var dayStr = day < 10 ? '0' + day : day;
             var year = fromdate.getFullYear();
-            var date1 = month + "/" + day + "/" + year;
-            var month = todate.getMonth() + 1;
-            month = month < 10 ? '0' + month : month;
-            var day = todate.getDate();
-            day = day < 10 ? '0' + day : day;
-            var year = todate.getFullYear();
-            var date2 = month + "/" + day + "/" + year;
+            var date1 = monthStr + "/" + dayStr + "/" + year;
+            var tomonth = todate.getMonth() + 1;
+            var tomonthStr = tomonth < 10 ? '0' + tomonth : tomonth;
+            var toDateDay = todate.getDate();
+            var todayStr = toDateDay < 10 ? '0' + toDateDay : toDateDay;
+            var toyear = todate.getFullYear();
+            var date2 = tomonthStr + "/" + todayStr + "/" + toyear;
             var startDate = new Date(fromdate);
             var endDate = new Date(todate);
             var totalWeekdays = 0;
@@ -185,7 +216,7 @@ export class LeaveComponent {
 
     }
 
-    getformatdate(inputDate) {
+    /*getformatdate(inputDate) {
         let formattedDate = '';
         var date = new Date(inputDate);
         if (!isNaN(date.getTime())) {
@@ -199,7 +230,7 @@ export class LeaveComponent {
         }
 
         return formattedDate;
-    }
+    }*/
 
 }
 

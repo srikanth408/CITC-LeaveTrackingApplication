@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Srikanth",
+        "manager": "Gokul",
+        "leaveBalance": "20",
+        "leavesApplied": "1",
+        "fromDate": "2017/6/30",
+        "toDate": "2017/7/1",
+        "reason": "Health problem",
+        "status": "pendding"
+    },
+    {
+        "name": "Sreenath",
+        "manager": "Gokul",
+        "leaveBalance": "20",
+        "leavesApplied": "1",
+        "fromDate": "2017/6/30",
+        "toDate": "2017/7/1",
+        "reason": "Health problem",
+        "status": "pendding"
+    },
+    {
+        "name": "Akhilesh",
+        "manager": "Gokul",
+        "leaveBalance": "20",
+        "leavesApplied": "1",
+        "fromDate": "2017/6/30",
+        "toDate": "2017/7/1",
+        "reason": "Health problem",
+        "status": "pendding"
+    }
+]

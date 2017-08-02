@@ -388,7 +388,7 @@ public class LTADaoImpl {
 		List<UserBean> managersList = new ArrayList();
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
-			String query = "select * from Managerslist";
+			String query = "select * from managerslist";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -408,7 +408,7 @@ public class LTADaoImpl {
 		List<UserBean> onsitemanagersList = new ArrayList();
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
-			String query = "select * from OnsiteManagerslist";
+			String query = "select * from onsitemanagerslist";
 			PreparedStatement stmt = conn.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

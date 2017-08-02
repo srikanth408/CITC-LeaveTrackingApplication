@@ -18,7 +18,6 @@
                             <th>CL's</th>
                             <th>SL's</th>
                             <th>PL's</th>
-                            <th>No of Leaves</th>
                             <th>Director</th>
                         </tr>
                     </thead>
@@ -26,10 +25,9 @@
                         <tr>
                             <td>{{employees.resourceManagerName}}</td>
                             <td>{{employees.onsiteManagerName}}</td>
-                            <td>{{employees.numOfCL}}</td>
-                            <td>{{employees.numOfSL}}</td>
-                            <td>{{employees.numOfPL}}</td>
-                            <td>{{employees.numOfLeaves}}</td>
+                            <td>{{employees.numOfCL - totleavesOfCL}}</td>
+                            <td>{{employees.numOfSL - totleavesOfSL}}</td>
+                            <td>{{employees.numOfPL - totleavesOfPL}}</td>
                             <td>{{employees.director}}</td>
                         </tr>
                     </tbody>
@@ -77,13 +75,13 @@
                         <div class="col-sm-6">
                             <div>
                                 <label>From Date: </label>
-                                <input type="date" ngModel name="fromDate" class="form-control" required [(ngModel)]="leave.fromdate" (change)="onChange($event.target.value)">
+                                <my-date-picker [options]="myDatePickerOptions" ngModel name="fromDate"  required [(ngModel)]="leave.fromdate" (dateChanged)="onChange($event, 'F')"></my-date-picker>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div>
                                 <label>To Date: </label> <span style="color:red; font-size:14px;">{{todate_errorMsg}}</span>
-                                <input type="date" ngModel name="toDate" class="form-control" required [(ngModel)]="leave.todate" (change)="onChange($event.target.value)">
+                                <my-date-picker [options]="myDatePickerOptions" ngModel name="toDate" required [(ngModel)]="leave.todate" (dateChanged)="onChange($event, 'T')"></my-date-picker>
                             </div>
                         </div>
                     </div>
@@ -91,11 +89,11 @@
                         <div class="col-sm-6">
                             <div>
                                 <label>Leave type: </label>
-                                <select ngModel name="leaveType" class="form-control" required [(ngModel)]="leave.leavetype" (change)="onChange($event.target.value)"> 
+                                <select ngModel name="leaveType" class="form-control" required [(ngModel)]="leave.leavetype" (change)="onChange($event,'')"> 
                                     <option disabled>Select Leave type</option>
                                     <option value="CL">Casual leave</option>
                                     <option value="SL">Sick Leave</option>
-                                    <option value="PL">Planed Leave</option>
+                                    <option value="PL">Privilege Leave</option>
                                   </select>
                             </div>
                         </div>
