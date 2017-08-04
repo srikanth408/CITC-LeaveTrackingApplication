@@ -19,7 +19,7 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("select e1.*, e2.firstName as managerfirstName,e2.lastName as managerlastName, e3.firstName as onsitemanagerfirstname,e3.lastName as onsitemanagerlastName from employee e1 JOIN employee e2 on e1.managerId=e2.empCode JOIN employee e3 on e1.onsiteManagerId=e3.empCode  where e1.email = ? AND e1.password = ?");
+					.prepareStatement("select e1.*, e2.firstName as managerfirstName,e2.lastName as managerlastName from employee e1 JOIN employee e2 on e1.managerId=e2.empCode where e1.email = ? AND e1.password = ?");
 			stmt.setString(1, user.getEmail());
 			stmt.setString(2, user.getPassword());
 			ResultSet rs = stmt.executeQuery();
@@ -33,7 +33,6 @@ public class LTADaoImpl {
 				ub.setResourceManager(rs.getString("managerId"));
 				ub.setOnsiteManager(rs.getString("onsiteManagerId"));
 				ub.setResourceManagerName(rs.getString("managerfirstName")+" "+rs.getString("managerlastName"));
-				ub.setOnsiteManagerName(rs.getString("onsitemanagerfirstName")+" "+rs.getString("onsitemanagerlastName"));
 				ub.setNumOfLeaves(rs.getInt("CL") + rs.getInt("SL")+ rs.getInt("PL"));
 				ub.setNumOfCL(rs.getInt("CL"));
 				ub.setNumOfSL(rs.getInt("SL"));
@@ -172,13 +171,12 @@ public class LTADaoImpl {
 		return status;
 	}
 
-	public List<UserBean> getAllUsersUnderRM(String managerID) {
+	public List<UserBean> getAllUsersUnderRM() {
 		List<UserBean> ubList = new ArrayList<>();
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("SELECT * FROM employee WHERE managerId = ? ");
-			stmt.setString(1, managerID);
+					.prepareStatement("SELECT * FROM employee");
 			ResultSet rs = stmt.executeQuery();
 			UserBean ub = null;
 			while (rs.next()) {
@@ -415,7 +413,7 @@ public class LTADaoImpl {
 				UserBean ub = new UserBean();
 				ub.setFirstName(rs.getString("OnsiteManager_name"));
 				ub.setDept(rs.getString("OnsiteManagers_Department"));
-				ub.setEmpCode(rs.getString("OnsiteManagers_Id"));
+				ub.setEmpCode(rs.getString("Onsitemanagers_Email"));
 				onsitemanagersList.add(ub);
 			}
 		} catch (Exception e) {

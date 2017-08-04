@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeedataService } from '../app.service';
 import { EmpDataService } from '../app.model';
+import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 'angular2-toaster';
 
 
 @Component({
@@ -16,7 +17,10 @@ export class LoginComponent implements OnInit {
     public employees: any = {};
     public errorMsg: any = [];
 
-    constructor(public router: Router, public _service: EmployeedataService, public empDataSr: EmpDataService) { }
+    constructor(public router: Router,
+        public _service: EmployeedataService,
+        public empDataSr: EmpDataService,
+        public toasterService: ToasterService) { }
 
     ngOnInit() {
 
@@ -33,8 +37,8 @@ export class LoginComponent implements OnInit {
                 //this.employees = item;
                 localStorage.setItem("app_data", JSON.stringify(value));
                 this.empDataSr.setEmpInfo(resEmployeeData.body);
-               if (resEmployeeData.body.email) {
-                     this.empDataSr.loggedIn = true;
+                if (resEmployeeData.body.email) {
+                    this.empDataSr.loggedIn = true;
                     switch (resEmployeeData.body.userRole) {
                         case 0: {
                             screen = 'leave'
@@ -42,21 +46,26 @@ export class LoginComponent implements OnInit {
                             this.router.navigate([screen]);
                             break;
                         }
-                        case 1: {
-                            screen = 'admin'
-                            this.empDataSr.isAdmin = true;
-                            this.router.navigate([screen]);
-                            break;
-                        }
+                        case 1:
+                            {
+                                screen = 'admin'
+                                this.empDataSr.isAdmin = true;
+                                this.empDataSr.isManager = false;
+                              //  this.empDataSr.isMainAdmin=true;
+                                this.router.navigate([screen]);
+                                break;
+                            }
                         case 2: {
                             screen = 'admin'
                             this.empDataSr.isAdmin = true;
+                            this.empDataSr.isManager = true;
+                            //this.empDataSr.isMainAdmin=false;
                             this.router.navigate([screen]);
                             break;
                         }
-                         
+
                     }
-                        
+
                 } else {
                     this.errorMsg = 'Username or password is incorrect';
 

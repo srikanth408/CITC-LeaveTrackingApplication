@@ -28,14 +28,14 @@ public class LogindetailsMailSender implements MailSender {
 			Properties prop = new Properties();
 			prop.setProperty("mail.smtp.host", server.getHost());
 			prop.setProperty("mail.smtp.port", server.getPort());
-			prop.setProperty("mail.smtp.auth", "true");
+			prop.setProperty("mail.smtp.auth", "false");
 			prop.setProperty("mail.smtp.starttls.enable", "true");
-			//Session mailSession = Session.getDefaultInstance(prop);
-			Session mailSession = Session.getInstance(prop, new Authenticator(){
+			Session mailSession = Session.getDefaultInstance(prop);
+			/*Session mailSession = Session.getInstance(prop, new Authenticator(){
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 				  return new PasswordAuthentication(server.getUsername(), server.getPassword()); 
-			}});
+			}});*/
 			MimeMessage msg = this.createMessage(leave, user,mailSession);
 			
 			try {

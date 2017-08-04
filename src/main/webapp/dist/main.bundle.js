@@ -28,7 +28,7 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AdminComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -67,7 +67,7 @@ var AdminComponent = (function () {
                 _this.empDataSr.loading = false;
                 _this.popToastSuccess();
             }
-            else if (res.header && res.header !== 'Ok') {
+            else {
                 _this.empDataSr.loading = false;
                 _this.popToastFailed();
             }
@@ -75,7 +75,7 @@ var AdminComponent = (function () {
     };
     AdminComponent.prototype.cancelLeaveAction = function (index, status) {
         var _this = this;
-        if (this.leaveHistory[index].status === "Approved") {
+        if (window.confirm("Are you sure want to delete") && this.leaveHistory[index].status === "Approved") {
             this.empDataSr.loading = true;
             this._service.ApproveRejectLeave(status, this.leaveHistory[index].reqId)
                 .subscribe(function (res) {
@@ -85,7 +85,7 @@ var AdminComponent = (function () {
                     _this.empDataSr.loading = false;
                     _this.popToastSuccess();
                 }
-                else if (res.header && res.header !== 'Ok') {
+                else {
                     _this.empDataSr.loading = false;
                     _this.popToastFailed();
                 }
@@ -95,6 +95,13 @@ var AdminComponent = (function () {
             this.popToastFailed();
         }
     };
+    Object.defineProperty(AdminComponent.prototype, "isManager", {
+        get: function () {
+            return this.empDataSr.isManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
     AdminComponent.prototype.getLeaveRequests = function () {
         var _this = this;
         this._service.getLeaves(this.EmployeeId.empCode, "A")
@@ -144,7 +151,7 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EdituserComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -261,7 +268,7 @@ var _a, _b, _c, _d;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SignupComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -290,6 +297,7 @@ var SignupComponent = (function () {
          ];*/
         this.selectedPerson = {};
         this.showId = true;
+        this.obj = [];
     }
     SignupComponent.prototype.ngOnInit = function () {
         this.getmanagersList();
@@ -315,7 +323,7 @@ var SignupComponent = (function () {
                 _this.empDataSr.loading = false;
                 _this.popToastSuccess();
             }
-            else if (res.header && res.header !== 'Ok') {
+            else {
                 _this.empDataSr.loading = false;
                 _this.popToastFailed();
             }
@@ -338,18 +346,12 @@ var SignupComponent = (function () {
         this.toasterService.pop(toast);
     };
     SignupComponent.prototype.onChanged = function ($event) {
-        var match = this.managerslist.find(function (x) { return x.empCode === $event; });
-        this.selectedPerson.dept = match.dept;
-        console.log(this.managerslist);
-    };
-    SignupComponent.prototype.onchange = function ($event) {
-        if ($event === "2") {
-            this.showId = false;
-        }
-        else {
-            this.showId = true;
-            this.selectedPerson.dept = null;
-        }
+        var _this = this;
+        var match = this.onsitemanagerslist.filter(function (x) { return x.dept === $event; });
+        this.obj = [];
+        match.forEach(function (element) {
+            _this.obj.push(element.firstName);
+        });
     };
     return SignupComponent;
 }());
@@ -376,7 +378,7 @@ var _a, _b, _c, _d;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__ = __webpack_require__(114);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LeaveComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -405,9 +407,6 @@ var LeaveComponent = (function () {
         this.leave = {};
         this.reqType = "NA";
         this.valid = false;
-        this.totleavesOfCL = 0;
-        this.totleavesOfSL = 0;
-        this.totleavesOfPL = 0;
         this.myDatePickerOptions = {
             // other options...
             dateFormat: 'mm/dd/yyyy',
@@ -433,7 +432,7 @@ var LeaveComponent = (function () {
                 _this.empDataSr.loading = false;
                 _this.popToastSuccess();
             }
-            else if (res.header && res.header !== 'Ok') {
+            else {
                 _this.empDataSr.loading = false;
                 _this.popToastFailed();
             }
@@ -460,6 +459,9 @@ var LeaveComponent = (function () {
         this._service.getLeaves(this.employees.empCode, this.reqType)
             .subscribe(function (data) {
             _this.leaveHistory = data;
+            _this.totleavesOfCL = 0;
+            _this.totleavesOfSL = 0;
+            _this.totleavesOfPL = 0;
             for (var i = 0; i < _this.leaveHistory.length; i++) {
                 if (_this.leaveHistory[i].status === "Pending" && _this.leaveHistory[i].leaveType === "CL") {
                     _this.totleavesOfCL = _this.totleavesOfCL + _this.leaveHistory[i].leavesApplied;
@@ -471,6 +473,9 @@ var LeaveComponent = (function () {
                     _this.totleavesOfPL = _this.totleavesOfPL + _this.leaveHistory[i].leavesApplied;
                 }
             }
+            _this.totleavesOfCL = _this.empDataSr.getEmpInfo().numOfCL - _this.totleavesOfCL;
+            _this.totleavesOfSL = _this.empDataSr.getEmpInfo().numOfSL - _this.totleavesOfSL;
+            _this.totleavesOfPL = _this.empDataSr.getEmpInfo().numOfPL - _this.totleavesOfPL;
         });
     };
     LeaveComponent.prototype.getholidaysList = function () {
@@ -485,6 +490,16 @@ var LeaveComponent = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(LeaveComponent.prototype, "isManager", {
+        get: function () {
+            return this.empDataSr.isManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /*get isMainAdmin() {
+        return this.empDataSr.isMainAdmin;
+    }*/
     LeaveComponent.prototype.onChange = function (value, dtType) {
         var _fromdate = this.leave.fromdate ? this.leave.fromdate.formatted : '';
         var _todate = this.leave.todate ? this.leave.todate.formatted : '';
@@ -545,15 +560,15 @@ var LeaveComponent = (function () {
             this.todate_errorMsg = "";
             this.valid = false;
         }
-        if (leavetype === "CL" && this.empDataSr.getEmpInfo().numOfCL < this.leaves) {
+        if (leavetype === "CL" && this.totleavesOfCL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
         }
-        else if (leavetype === "SL" && this.empDataSr.getEmpInfo().numOfSL < this.leaves) {
+        else if (leavetype === "SL" && this.totleavesOfSL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
         }
-        else if (leavetype === "PL" && this.empDataSr.getEmpInfo().numOfPL < this.leaves) {
+        else if (leavetype === "PL" && this.totleavesOfPL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
         }
@@ -585,7 +600,7 @@ var _a, _b, _c, _d, _e;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SetPasswordComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -662,6 +677,7 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -676,11 +692,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var LoginComponent = (function () {
-    function LoginComponent(router, _service, empDataSr) {
+    function LoginComponent(router, _service, empDataSr, toasterService) {
         this.router = router;
         this._service = _service;
         this.empDataSr = empDataSr;
+        this.toasterService = toasterService;
         this.employees = {};
         this.errorMsg = [];
     }
@@ -705,15 +723,20 @@ var LoginComponent = (function () {
                         _this.router.navigate([screen]);
                         break;
                     }
-                    case 1: {
-                        screen = 'admin';
-                        _this.empDataSr.isAdmin = true;
-                        _this.router.navigate([screen]);
-                        break;
-                    }
+                    case 1:
+                        {
+                            screen = 'admin';
+                            _this.empDataSr.isAdmin = true;
+                            _this.empDataSr.isManager = false;
+                            //  this.empDataSr.isMainAdmin=true;
+                            _this.router.navigate([screen]);
+                            break;
+                        }
                     case 2: {
                         screen = 'admin';
                         _this.empDataSr.isAdmin = true;
+                        _this.empDataSr.isManager = true;
+                        //this.empDataSr.isMainAdmin=false;
                         _this.router.navigate([screen]);
                         break;
                     }
@@ -750,10 +773,10 @@ LoginComponent = __decorate([
         template: __webpack_require__(198),
         providers: [__WEBPACK_IMPORTED_MODULE_2__app_service__["a" /* EmployeedataService */]]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__app_service__["a" /* EmployeedataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__app_service__["a" /* EmployeedataService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */]) === "function" && _c || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__app_service__["a" /* EmployeedataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__app_service__["a" /* EmployeedataService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__["b" /* ToasterService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__["b" /* ToasterService */]) === "function" && _d || Object])
 ], LoginComponent);
 
-var _a, _b, _c;
+var _a, _b, _c, _d;
 //# sourceMappingURL=app.login.component.js.map
 
 /***/ }),
@@ -766,7 +789,7 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_model__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_service__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -960,14 +983,14 @@ var _a, _b;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_routing__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_model__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_service__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angular2_toaster__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angular2_toaster__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_platform_browser_animations__ = __webpack_require__(106);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__ = __webpack_require__(191);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__);
@@ -1211,7 +1234,7 @@ module.exports = module.exports.toString();
 /***/ 193:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li class=\"active\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave Requests </div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th>Employee Name</th>\n                    <th>Resource Manager Name</th>\n                    <th>CL's</th>\n                    <th>SL's</th>\n                    <th>PL's </th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Action</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let employees of employee;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{employees.employeeName}}</td>\n                    <td>{{employees.resourceManager}}</td>\n                    <td>{{employees.numOfCL}}</td>\n                    <td>{{employees.numOfSL}}</td>\n                    <td>{{employees.numOfPL}}</td>\n                    <td>{{employees.leavesApplied}}</td>\n                    <td>{{employees.fromDate}}</td>\n                    <td>{{employees.toDate}}</td>\n                    <td>{{employees.leaveType}}</td>\n                    <td class=\"reason\">{{employees.reason}}</td>\n                    <td>{{employees.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-success\" (click)=\"approveRejectAction(i, 'Approved')\"><span class=\"glyphicon glyphicon-ok\"></span></button>\n                        <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"approveRejectAction(i, 'Rejected')\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave History</div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.employeeName\" placeholder=\"Employee Name\"></th>\n                    <th>Resource Manager Name</th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Cancel</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let History of leaveHistory | filterBy: userFilter;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{History.employeeName}}</td>\n                    <td>{{History.resourceManager}}</td>\n                    <td>{{History.leavesApplied}}</td>\n                    <td>{{History.fromDate}}</td>\n                    <td>{{History.toDate}}</td>\n                    <td>{{History.leaveType}}</td>\n                    <td class=\"reason\">{{History.reason}}</td>\n                    <td>{{History.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"cancelLeaveAction(i, 'Cancelled')\">Cancel</button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li class=\"active\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave Requests </div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th>Employee Name</th>\n                    <th>Resource Manager Name</th>\n                    <th>CL's</th>\n                    <th>SL's</th>\n                    <th>PL's </th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Action</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let employees of employee;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{employees.employeeName}}</td>\n                    <td>{{employees.resourceManager}}</td>\n                    <td>{{employees.numOfCL}}</td>\n                    <td>{{employees.numOfSL}}</td>\n                    <td>{{employees.numOfPL}}</td>\n                    <td>{{employees.leavesApplied}}</td>\n                    <td>{{employees.fromDate}}</td>\n                    <td>{{employees.toDate}}</td>\n                    <td>{{employees.leaveType}}</td>\n                    <td class=\"reason\">{{employees.reason}}</td>\n                    <td>{{employees.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-success\" (click)=\"approveRejectAction(i, 'Approved')\"><span class=\"glyphicon glyphicon-ok\"></span></button>\n                        <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"approveRejectAction(i, 'Rejected')\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave History</div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.employeeName\" placeholder=\"Employee Name\"></th>\n                    <th>Resource Manager Name</th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Cancel</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let History of leaveHistory | filterBy: userFilter;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{History.employeeName}}</td>\n                    <td>{{History.resourceManager}}</td>\n                    <td>{{History.leavesApplied}}</td>\n                    <td>{{History.fromDate}}</td>\n                    <td>{{History.toDate}}</td>\n                    <td>{{History.leaveType}}</td>\n                    <td class=\"reason\">{{History.reason}}</td>\n                    <td>{{History.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"cancelLeaveAction(i, 'Cancelled')\">Cancel</button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -1225,28 +1248,28 @@ module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" 
 /***/ 195:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li class=\"active\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-sm-6\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Add New User Here </div>\n                <div class=\"panel-body\">\n                    <form name=\"myform\" #userForm=\"ngForm\" (ngSubmit)=\"onSubmit(userForm.value,userForm)\" novalidate>\n                        <div class=\"row\">\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>First Name</label>\n                                    <input type=\"text\" #fnameRef=\"ngModel\" required class=\"form-control\" name=\"firstName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>Middle Name</label>\n                                    <input type=\"text\" #middleRef=\"ngModel\" class=\"form-control\" name=\"middleName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>Last Name</label>\n                                    <input type=\"text\" #lnameRef=\"ngModel\" required class=\"form-control\" name=\"lastName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label>Email</label>\n                                    <input type=\"text\" #emailRef=\"ngModel\" pattern=\"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\" required class=\"form-control\"\n                                        name=\"email\" ngModel>\n                                    <div *ngIf=\"emailRef.errors &&(emailRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!emailRef.errors.required\">\n                                            please enter your email address\n                                        </div>\n                                        <div [hidden]=\"!emailRef.errors.pattern\">\n                                            please enter valid email with '@' and '.'\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label>Emp Code</label>\n                                    <input type=\"text\" #empRef=\"ngModel\" pattern=\"^[0-9]{4}$\" required class=\"form-control\" name=\"empCode\" ngModel>\n                                    <div *ngIf=\"empRef.errors &&(empRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!empRef.errors.required\">\n                                            please enter your emp code\n                                        </div>\n                                        <div [hidden]=\"!empRef.errors.pattern\">\n                                            please enter empcode with starting number between 0 to 9 and max 4\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label>Phone</label>\n                                    <input #phoneRef=\"ngModel\" type=\"text\" pattern=\"^[0-9]{10}$\" required class=\"form-control\" name=\"phone\" ngModel>\n                                    <div *ngIf=\"phoneRef.errors &&(phoneRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!phoneRef.errors.required\">\n                                            please enter your phone number\n                                        </div>\n                                        <div [hidden]=\"!phoneRef.errors.pattern\">\n                                            please enter 10 digit phone number\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <div class=col-sm-6>\n                                <div class=\"form-group\">\n                                    <label>User Role</label>\n                                    <select ngModel name=\"userRole\" class=\"form-control\" required (change)=\"onchange($event.target.value)\">\n                                <option value=\"2\">On-site Manager</option>\n                                <option value=\"1\">Admin</option>\n                                <option value=\"0\">Employee</option>\n                                   </select>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\">\n                                    <label>Resource Manager</label>\n                                    <select name=\"resourceManager\" ngModel class=\"form-control\" required (change)=\"onChanged($event.target.value)\">\n                                            <option *ngFor=\"let p of managerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                         </select>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label>Department</label>\n                                    <input class=\"form-control\" name=\"dept\" required ngModel [(ngModel)]=\"selectedPerson.dept\" readonly>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\">\n                                    <label>Onsite Manager</label>\n                                    <select class=\"form-control\" name=\"onsiteManager\" required ngModel>\n                                            <option *ngFor=\"let p of onsitemanagerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                    </select>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\">\n                                    <label>Director</label>\n                                    <input type=\"text\" #dirRef=\"ngModel\" class=\"form-control\" name=\"director\" required ngModel>\n                                </div>\n                            </div>\n                        </div>\n                        <br>\n                        <button [disabled]=\"!userForm.form.valid\" type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li class=\"active\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-sm-6\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Add New User Here </div>\n                <div class=\"panel-body\">\n                    <form name=\"myform\" #userForm=\"ngForm\" (ngSubmit)=\"userForm.valid && onSubmit(userForm.value,userForm)\" novalidate>\n                        <div class=\"row\">\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !fnameRef.valid }\">\n                                    <label>First Name</label>\n                                    <input type=\"text\" #fnameRef=\"ngModel\" required class=\"form-control\" name=\"firstName\" ngModel>\n                                    <span *ngIf=\"!fnameRef.valid  && userForm.submitted\" class=\"help-block\">\n                                    First Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>Middle Name</label>\n                                    <input type=\"text\" #middleRef=\"ngModel\" class=\"form-control\" name=\"middleName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !lnameRef.valid }\">\n                                    <label>Last Name</label>\n                                    <input type=\"text\" #lnameRef=\"ngModel\" required class=\"form-control\" name=\"lastName\" ngModel>\n                                    <span *ngIf=\" !lnameRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Last Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !emailRef.valid }\">\n                                    <label>Email</label>\n                                    <input type=\"text\" #emailRef=\"ngModel\" pattern=\"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\" required class=\"form-control\"\n                                        name=\"email\" ngModel>\n                                    <div *ngIf=\"emailRef.errors &&(emailRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!emailRef.errors.required\">\n                                            please enter your email address\n                                        </div>\n                                        <div [hidden]=\"!emailRef.errors.pattern\">\n                                            please enter valid email with '@' and '.'\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\" !emailRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Email is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !empRef.valid }\">\n                                    <label>Emp Code</label>\n                                    <input type=\"text\" #empRef=\"ngModel\" pattern=\"^[0-9]{4}$\" required class=\"form-control\" name=\"empCode\" ngModel>\n                                    <div *ngIf=\"empRef.errors &&(empRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!empRef.errors.required\">\n                                            please enter your emp code\n                                        </div>\n                                        <div [hidden]=\"!empRef.errors.pattern\">\n                                            please enter empcode with starting number between 0 to 9 and max 4\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!empRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Emp Code is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !phoneRef.valid }\">\n                                    <label>Phone</label>\n                                    <input #phoneRef=\"ngModel\" type=\"text\" pattern=\"^[0-9]{10}$\" required class=\"form-control\" name=\"phone\" ngModel>\n                                    <div *ngIf=\"phoneRef.errors &&(phoneRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!phoneRef.errors.required\">\n                                            please enter your phone number\n                                        </div>\n                                        <div [hidden]=\"!phoneRef.errors.pattern\">\n                                            please enter 10 digit phone number\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!phoneRef.valid && userForm.submitted\" class=\"help-block\">\n                                Phone number is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dirRef.valid }\">\n                                    <label>Director</label>\n                                    <input type=\"text\" #dirRef=\"ngModel\" class=\"form-control\" name=\"director\" required ngModel>\n                                    <span *ngIf=\"!dirRef.valid && userForm.submitted\" class=\"help-block\">\n                                Director name is required\n                                   </span>\n                                </div>\n\n                            </div>\n                            <div class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !userRole.valid }\">\n                                    <label>User Role</label>\n                                    <select ngModel name=\"userRole\" class=\"form-control\" required #userRole=\"ngModel\">\n                                <option value=\"2\">HRA</option>\n                                <option value=\"1\">Manager</option>\n                                <option value=\"0\">Employee</option>\n                                   </select>\n                                    <span *ngIf=\"!userRole.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select user role\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dept.valid }\">\n                                    <label>Department</label>\n                                    <!--<input class=\"form-control\" name=\"dept\" required ngModel [(ngModel)]=\"selectedPerson.dept\" readonly>-->\n                                    <select name=\"dept\" ngModel class=\"form-control\" required #dept=\"ngModel\" (change)=\"onChanged($event.target.value)\">\n                                            <option value=\"QA\">QA</option>\n                                            <option value=\"Dev\">Devlopement</option>\n                                            <option value=\"IT\">IT</option>\n                                         </select>\n                                    <span *ngIf=\"!dept.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select department\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !resManager.valid }\">\n                                    <label>Resource Manager</label>\n                                    <!-- <select name=\"resourceManager\" ngModel class=\"form-control\" required (change)=\"onChanged($event.target.value)\">\n                                            <option *ngFor=\"let p of managerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                         </select>-->\n                                    <select name=\"resourceManager\" ngModel class=\"form-control\" required #resManager=\"ngModel\">\n                                           <option *ngFor=\"let p of managerslist\" value=\"{{p.empCode}}\">{{p.firstName}}</option>\n                                         </select>\n                                    <span *ngIf=\"!resManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select resource manager\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !onsManager.valid }\">\n                                    <label>Onsite Manager</label>\n                                    <!--<select class=\"form-control\" name=\"onsiteManager\" required ngModel>\n                                            <option *ngFor=\"let p of onsitemanagerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                    </select>-->\n                                    <select class=\"form-control\" name=\"onsiteManager\" required ngModel #onsManager=\"ngModel\">\n                                     <option *ngFor=\"let p of obj\" value=\"{{p}}\">{{p}}</option>\n                                    </select>\n                                    <span *ngIf=\"!onsManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select onsite manager\n                                   </span>\n                                </div>\n                            </div>\n                        </div>\n                        <br>\n                        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 196:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li class=\"active\"><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Welcome to Leave Tracking Application of Copart</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped\">\n                    <thead>\n                        <tr>\n                            <th>Resource Manager</th>\n                            <th>Onsite Manager</th>\n                            <th>CL's</th>\n                            <th>SL's</th>\n                            <th>PL's</th>\n                            <th>Director</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td>{{employees.resourceManagerName}}</td>\n                            <td>{{employees.onsiteManagerName}}</td>\n                            <td>{{employees.numOfCL - totleavesOfCL}}</td>\n                            <td>{{employees.numOfSL - totleavesOfSL}}</td>\n                            <td>{{employees.numOfPL - totleavesOfPL}}</td>\n                            <td>{{employees.director}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Leave history</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped \">\n                    <thead>\n                        <tr>\n                            <th>Leave Type</th>\n                            <th>Fromdate</th>\n                            <th>Todate</th>\n                            <th>No of days</th>\n                            <th>Reason</th>\n                            <th>Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let item of leaveHistory\">\n                            <td>{{item.leaveType}}</td>\n                            <td>{{item.fromDate}}</td>\n                            <td>{{item.toDate}}</td>\n                            <td>{{item.leavesApplied}}</td>\n                            <td style=\"table-layout:fixed;width:25%;\">{{item.reason}}</td>\n                            <td>{{item.status}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave application form </div>\n    <div class=\"panel-body\">\n        <form #leaveform=\"ngForm\" (ngSubmit)=\"OnSubmit(leaveform.value, leaveform)\" novalidate>\n            <div class=\"row\">\n                <div class=\"col-sm-6\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>From Date: </label>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"fromDate\"  required [(ngModel)]=\"leave.fromdate\" (dateChanged)=\"onChange($event, 'F')\"></my-date-picker>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>To Date: </label> <span style=\"color:red; font-size:14px;\">{{todate_errorMsg}}</span>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"toDate\" required [(ngModel)]=\"leave.todate\" (dateChanged)=\"onChange($event, 'T')\"></my-date-picker>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>Leave type: </label>\n                                <select ngModel name=\"leaveType\" class=\"form-control\" required [(ngModel)]=\"leave.leavetype\" (change)=\"onChange($event,'')\"> \n                                    <option disabled>Select Leave type</option>\n                                    <option value=\"CL\">Casual leave</option>\n                                    <option value=\"SL\">Sick Leave</option>\n                                    <option value=\"PL\">Privilege Leave</option>\n                                  </select>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>No of days</label><span style=\"color:red; font-size:14px;\">{{leaves_errorMsg}}</span>\n                                <input ngModel name=\"leavesApplied\" class=\"form-control\" required [(ngModel)]=\"leaves\" readonly>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-sm-6\">\n                    <label>Reason for Leave</label>\n                    <textarea class=\"form-control\" rows=\"4\" cols=\"10\" style=\"width:100%;\" ngModel name=\"reason\" required></textarea>\n                </div>\n            </div>\n            <br>\n            <button [disabled]=\"!leaveform.form.valid || valid\" type=\"submit\" class=\"btn btn-primary pull-right\">Submit</button>\n        </form>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li class=\"active\"><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Welcome to Leave Tracking Application of Copart</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped\">\n                    <thead>\n                        <tr>\n                            <th>Resource Manager</th>\n                            <th>Onsite Manager</th>\n                            <th>CL's</th>\n                            <th>SL's</th>\n                            <th>PL's</th>\n                            <th>Director</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td>{{employees.resourceManagerName}}</td>\n                            <td>{{employees.onsiteManager}}</td>\n                            <td>{{totleavesOfCL}}</td>\n                            <td>{{totleavesOfSL}}</td>\n                            <td>{{totleavesOfPL}}</td>\n                            <td>{{employees.director}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Leave history</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped \">\n                    <thead>\n                        <tr>\n                            <th>Leave Type</th>\n                            <th>Fromdate</th>\n                            <th>Todate</th>\n                            <th>No of days</th>\n                            <th>Reason</th>\n                            <th>Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let item of leaveHistory\">\n                            <td>{{item.leaveType}}</td>\n                            <td>{{item.fromDate}}</td>\n                            <td>{{item.toDate}}</td>\n                            <td>{{item.leavesApplied}}</td>\n                            <td style=\"table-layout:fixed;width:25%;\">{{item.reason}}</td>\n                            <td>{{item.status}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave application form </div>\n    <div class=\"panel-body\">\n        <form #leaveform=\"ngForm\" (ngSubmit)=\"OnSubmit(leaveform.value, leaveform)\" novalidate>\n            <div class=\"row\">\n                <div class=\"col-sm-6\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>From Date: </label>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"fromDate\"  required [(ngModel)]=\"leave.fromdate\" (dateChanged)=\"onChange($event, 'F')\"></my-date-picker>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>To Date: </label> <span style=\"color:red; font-size:14px;\">{{todate_errorMsg}}</span>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"toDate\" required [(ngModel)]=\"leave.todate\" (dateChanged)=\"onChange($event, 'T')\"></my-date-picker>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>Leave type: </label>\n                                <select ngModel name=\"leaveType\" class=\"form-control\" required [(ngModel)]=\"leave.leavetype\" (change)=\"onChange($event,'')\"> \n                                    <option disabled>Select Leave type</option>\n                                    <option value=\"CL\">Casual leave</option>\n                                    <option value=\"SL\">Sick Leave</option>\n                                    <option value=\"PL\">Privilege Leave</option>\n                                  </select>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>No of days</label><span style=\"color:red; font-size:14px;\">{{leaves_errorMsg}}</span>\n                                <input ngModel name=\"leavesApplied\" class=\"form-control\" required [(ngModel)]=\"leaves\" readonly>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-sm-6\">\n                    <label>Reason for Leave</label>\n                    <textarea class=\"form-control\" rows=\"4\" cols=\"10\" style=\"width:100%;\" ngModel name=\"reason\" required></textarea>\n                </div>\n            </div>\n            <br>\n            <button [disabled]=\"!leaveform.form.valid || valid\" type=\"submit\" class=\"btn btn-primary pull-right\">Submit</button>\n        </form>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 197:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6\">\r\n            <div class=\"panel panel-primary\">\r\n                <div class=\"panel-heading\">Leave History</div>\r\n                <div class=\"panel-body table-responsive \">\r\n                    <form name=\"set_password_form\" #set_password_form=\"ngForm\" (ngSubmit)=\"onSubmit(set_password_form.value,set_password_form)\" novalidate>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter Old Password</label>\r\n                            <input required name=\"oldpassword\" type=\"text\" class=\"form-control\" [(ngModel)]=\"oldpassword\">\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter New Password</label>\r\n                            <input required name=\"password\" type=\"text\" class=\"form-control\" [(ngModel)]=\"password\">\r\n                            <label>Confirm New Password</label>\r\n                            <input required name=\"repeatPassword\" type=\"password\" class=\"form-control\" [(ngModel)]=\"repeatPassword\">\r\n                            <div [hidden]=\"password == repeatPassword\">Passwords do not match!</div>\r\n                        </div>\r\n                        <button [disabled]=\"!set_password_form.form.valid\" type=\"submit\" class=\"btn btn-primary\">Submit</button>\r\n                        <button type=\"reset\" class=\"btn btn-primary\">Reset</button>\r\n                    </form>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6\">\r\n            <div class=\"panel panel-primary\">\r\n                <div class=\"panel-heading\">Reset Password Here</div>\r\n                <div class=\"panel-body table-responsive \">\r\n                    <form name=\"set_password_form\" #set_password_form=\"ngForm\" (ngSubmit)=\"onSubmit(set_password_form.value,set_password_form)\" novalidate>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter Old Password</label>\r\n                            <input required name=\"oldpassword\" type=\"text\" class=\"form-control\" [(ngModel)]=\"oldpassword\">\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter New Password</label>\r\n                            <input required name=\"password\" type=\"text\" class=\"form-control\" [(ngModel)]=\"password\">\r\n                            <label>Confirm New Password</label>\r\n                            <input required name=\"repeatPassword\" type=\"password\" class=\"form-control\" [(ngModel)]=\"repeatPassword\">\r\n                            <div [hidden]=\"password == repeatPassword\">Passwords do not match!</div>\r\n                        </div>\r\n                        <button [disabled]=\"!set_password_form.form.valid\" type=\"submit\" class=\"btn btn-primary\">Submit</button>\r\n                        <button type=\"reset\" class=\"btn btn-primary\">Reset</button>\r\n                    </form>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
 /***/ 198:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-6 col-md-offset-2\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome to login Portal of Copart</div>\n                <div class=\" panel-body\">\n                    <form #lgForm=\"ngForm\" (ngSubmit)=\"loginSubmit(lgForm.value)\">\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-user\"></i></span>\n                            <input type=\"text\" name=\"email\" ngModel class=\"form-control\" placeholder=\"Email\" required />\n                        </div>\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n                           <input type=\"password\" name=\"password\" ngModel class=\"form-control\" placeholder=\"Password\" required  />\n                        </div>\n                        <button type=\"submit\" class=\"btn btn-primary\" name=\"action\">Login</button>\n                        <span>{{errorMsg}}</span>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n\n\n\n"
+module.exports = "<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-6 col-md-offset-2\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome To Login Portal of Copart</div>\n                <div class=\" panel-body\">\n                    <form #lgForm=\"ngForm\" (ngSubmit)=\"loginSubmit(lgForm.value)\">\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-user\"></i></span>\n                            <input type=\"text\" name=\"email\" ngModel class=\"form-control\" placeholder=\"Email\" required />\n                        </div>\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n                           <input type=\"password\" name=\"password\" ngModel class=\"form-control\" placeholder=\"Password\" required  />\n                        </div>\n                        <button type=\"submit\" class=\"btn btn-primary\" name=\"action\">Login</button>\n                        <span>{{errorMsg}}</span>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n\n\n\n"
 
 /***/ }),
 

@@ -1,8 +1,8 @@
 <ul class="nav nav-tabs">
     <li *ngIf="isAdmin"><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
-    <li *ngIf="isAdmin"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li *ngIf="isAdmin && isManager"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
     <li class="active"><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
-    <li *ngIf="isAdmin"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li *ngIf="isAdmin && isManager"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
 </ul>
 <br>
 <div class="row">
@@ -24,10 +24,10 @@
                     <tbody>
                         <tr>
                             <td>{{employees.resourceManagerName}}</td>
-                            <td>{{employees.onsiteManagerName}}</td>
-                            <td>{{employees.numOfCL - totleavesOfCL}}</td>
-                            <td>{{employees.numOfSL - totleavesOfSL}}</td>
-                            <td>{{employees.numOfPL - totleavesOfPL}}</td>
+                            <td>{{employees.onsiteManager}}</td>
+                            <td>{{totleavesOfCL}}</td>
+                            <td>{{totleavesOfSL}}</td>
+                            <td>{{totleavesOfPL}}</td>
                             <td>{{employees.director}}</td>
                         </tr>
                     </tbody>

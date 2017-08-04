@@ -38,14 +38,14 @@ export class AdminComponent {
                     this.getLeaveRequestHistory();
                     this.empDataSr.loading = false;
                     this.popToastSuccess();
-                }else if(res.header && res.header !== 'Ok'){
+                }else{
                      this.empDataSr.loading = false;
                      this.popToastFailed();
                 }
             });
     }
     cancelLeaveAction(index: any, status){
-        if(this.leaveHistory[index].status==="Approved"){
+       if(window.confirm("Are you sure want to delete") && this.leaveHistory[index].status==="Approved"){
               this.empDataSr.loading = true;
         this._service.ApproveRejectLeave(status, this.leaveHistory[index].reqId)
             .subscribe((res) => {
@@ -54,15 +54,20 @@ export class AdminComponent {
                     this.getLeaveRequestHistory();
                     this.empDataSr.loading = false;
                     this.popToastSuccess();
-                }else if(res.header && res.header !== 'Ok'){
+                }else {
                      this.empDataSr.loading = false;
                      this.popToastFailed();
                 }
             });
+        
          }else{
              this.popToastFailed();
          }
         
+        
+    }
+    get isManager() {
+        return this.empDataSr.isManager;
     }
 
     getLeaveRequests() {

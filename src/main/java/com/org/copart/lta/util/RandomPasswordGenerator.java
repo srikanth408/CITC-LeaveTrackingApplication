@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 public class RandomPasswordGenerator {
 
 	public static String getPasswordString() {
-		String combinations = "ABCDEFGHIJK$#@!%1234567890LMNOPQRSTUVWXYZ";
+		String combinations = "ABCDEFGHIJKabcdefghkm123456789LMNPQRSTUVWXYZnpqrstuvwxyz";
 		StringBuilder pass = new StringBuilder();
 		SecureRandom rnd = new SecureRandom();
 		for (int i = 0; i < 8; i++) { // length of the random string.

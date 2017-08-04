@@ -37,8 +37,8 @@ public class LTAServiceImpl {
 		return new LTADaoImpl().deleteUser(user);
 	}
 
-	public List<UserBean> getAllUsersUnderRM(String managerId) {
-		return new LTADaoImpl().getAllUsersUnderRM(managerId);
+	public List<UserBean> getAllUsersUnderRM() {
+		return new LTADaoImpl().getAllUsersUnderRM();
 	}
 
 	public List<LeaveBean> getLeaveList(String empId, String requestType) {

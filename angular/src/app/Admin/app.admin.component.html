@@ -1,8 +1,8 @@
 <ul class="nav nav-tabs">
     <li class="active"><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
-    <li><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li *ngIf="isManager"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
     <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
-    <li><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li *ngIf="isManager"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
 </ul>
 <br>
 <div class="panel panel-primary">

@@ -24,6 +24,7 @@ export class SignupComponent {
     public showId: boolean = true;
     public managerslist: any;
     public onsitemanagerslist: any;
+    public obj = [];
 
 
     constructor(public route: Router,
@@ -56,7 +57,7 @@ export class SignupComponent {
                     opt.resetForm();
                     this.empDataSr.loading = false;
                     this.popToastSuccess();
-                } else if (res.header && res.header !== 'Ok') {
+                } else {
                     this.empDataSr.loading = false;
                     this.popToastFailed();
                 }
@@ -84,20 +85,19 @@ export class SignupComponent {
         this.toasterService.pop(toast);
     }
 
- onChanged($event: any) {
-        var match = this.managerslist.find(x => x.empCode === $event);
-        this.selectedPerson.dept = match.dept;
-        console.log(this.managerslist);
+    onChanged($event: any) {
+        var match = this.onsitemanagerslist.filter(x => x.dept === $event);
+        this.obj = [];
+        match.forEach(element => {
+            this.obj.push(element.firstName);
+        });
+       
     }
+    /*get isMainAdmin() {
+        return this.empDataSr.isMainAdmin;
+    }*/
 
-    onchange($event: any) {
-        if ($event === "2") {
-            this.showId = false;
-        } else {
-            this.showId = true;
-            this.selectedPerson.dept = null;
-        }
-    }
+
 
 }
 

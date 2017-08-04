@@ -11,12 +11,15 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Add New User Here </div>
                 <div class="panel-body">
-                    <form name="myform" #userForm="ngForm" (ngSubmit)="onSubmit(userForm.value,userForm)" novalidate>
+                    <form name="myform" #userForm="ngForm" (ngSubmit)="userForm.valid && onSubmit(userForm.value,userForm)" novalidate>
                         <div class="row">
                             <div class="col-sm-4">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !fnameRef.valid }">
                                     <label>First Name</label>
                                     <input type="text" #fnameRef="ngModel" required class="form-control" name="firstName" ngModel>
+                                    <span *ngIf="!fnameRef.valid  && userForm.submitted" class="help-block">
+                                    First Name is required
+                                   </span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -26,13 +29,16 @@
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !lnameRef.valid }">
                                     <label>Last Name</label>
                                     <input type="text" #lnameRef="ngModel" required class="form-control" name="lastName" ngModel>
+                                    <span *ngIf=" !lnameRef.valid && userForm.submitted" class="help-block">
+                                    Last Name is required
+                                   </span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !emailRef.valid }">
                                     <label>Email</label>
                                     <input type="text" #emailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
                                         name="email" ngModel>
@@ -44,10 +50,13 @@
                                             please enter valid email with '@' and '.'
                                         </div>
                                     </div>
+                                    <span *ngIf=" !emailRef.valid && userForm.submitted" class="help-block">
+                                    Email is required
+                                   </span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !empRef.valid }">
                                     <label>Emp Code</label>
                                     <input type="text" #empRef="ngModel" pattern="^[0-9]{4}$" required class="form-control" name="empCode" ngModel>
                                     <div *ngIf="empRef.errors &&(empRef.dirty)" class="alert alert-danger">
@@ -58,10 +67,13 @@
                                             please enter empcode with starting number between 0 to 9 and max 4
                                         </div>
                                     </div>
+                                    <span *ngIf="!empRef.valid && userForm.submitted" class="help-block">
+                                    Emp Code is required
+                                   </span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !phoneRef.valid }">
                                     <label>Phone</label>
                                     <input #phoneRef="ngModel" type="text" pattern="^[0-9]{10}$" required class="form-control" name="phone" ngModel>
                                     <div *ngIf="phoneRef.errors &&(phoneRef.dirty)" class="alert alert-danger">
@@ -72,49 +84,79 @@
                                             please enter 10 digit phone number
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class=col-sm-6>
-                                <div class="form-group">
-                                    <label>User Role</label>
-                                    <select ngModel name="userRole" class="form-control" required (change)="onchange($event.target.value)">
-                                <option value="2">On-site Manager</option>
-                                <option value="1">Admin</option>
-                                <option value="0">Employee</option>
-                                   </select>
-                                </div>
-                            </div>
-                            <div *ngIf="showId" class=col-sm-6>
-                                <div class="form-group">
-                                    <label>Resource Manager</label>
-                                    <select name="resourceManager" ngModel class="form-control" required (change)="onChanged($event.target.value)">
-                                            <option *ngFor="let p of managerslist" value={{p.empCode}}>{{p.firstName}}</option>
-                                         </select>
-                                </div>
-                            </div>
-                            <div *ngIf="showId" class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Department</label>
-                                    <input class="form-control" name="dept" required ngModel [(ngModel)]="selectedPerson.dept" readonly>
-                                </div>
-                            </div>
-                            <div *ngIf="showId" class=col-sm-6>
-                                <div class="form-group">
-                                    <label>Onsite Manager</label>
-                                    <select class="form-control" name="onsiteManager" required ngModel>
-                                            <option *ngFor="let p of onsitemanagerslist" value={{p.empCode}}>{{p.firstName}}</option>
-                                    </select>
+                                    <span *ngIf="!phoneRef.valid && userForm.submitted" class="help-block">
+                                Phone number is required
+                                   </span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !dirRef.valid }">
                                     <label>Director</label>
                                     <input type="text" #dirRef="ngModel" class="form-control" name="director" required ngModel>
+                                    <span *ngIf="!dirRef.valid && userForm.submitted" class="help-block">
+                                Director name is required
+                                   </span>
+                                </div>
+
+                            </div>
+                            <div class=col-sm-6>
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !userRole.valid }">
+                                    <label>User Role</label>
+                                    <select ngModel name="userRole" class="form-control" required #userRole="ngModel">
+                                <option value="2">HRA</option>
+                                <option value="1">Manager</option>
+                                <option value="0">Employee</option>
+                                   </select>
+                                    <span *ngIf="!userRole.valid && userForm.submitted" class="help-block">
+                                     Please select user role
+                                   </span>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class="col-sm-6">
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !dept.valid }">
+                                    <label>Department</label>
+                                    <!--<input class="form-control" name="dept" required ngModel [(ngModel)]="selectedPerson.dept" readonly>-->
+                                    <select name="dept" ngModel class="form-control" required #dept="ngModel" (change)="onChanged($event.target.value)">
+                                            <option value="QA">QA</option>
+                                            <option value="Dev">Devlopement</option>
+                                            <option value="IT">IT</option>
+                                         </select>
+                                    <span *ngIf="!dept.valid && userForm.submitted" class="help-block">
+                                     Please select department
+                                   </span>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class=col-sm-6>
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !resManager.valid }">
+                                    <label>Resource Manager</label>
+                                    <!-- <select name="resourceManager" ngModel class="form-control" required (change)="onChanged($event.target.value)">
+                                            <option *ngFor="let p of managerslist" value={{p.empCode}}>{{p.firstName}}</option>
+                                         </select>-->
+                                    <select name="resourceManager" ngModel class="form-control" required #resManager="ngModel">
+                                           <option *ngFor="let p of managerslist" value="{{p.empCode}}">{{p.firstName}}</option>
+                                         </select>
+                                    <span *ngIf="!resManager.valid && userForm.submitted" class="help-block">
+                                     Please select resource manager
+                                   </span>
+                                </div>
+                            </div>
+                            <div *ngIf="showId" class=col-sm-6>
+                                <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !onsManager.valid }">
+                                    <label>Onsite Manager</label>
+                                    <!--<select class="form-control" name="onsiteManager" required ngModel>
+                                            <option *ngFor="let p of onsitemanagerslist" value={{p.empCode}}>{{p.firstName}}</option>
+                                    </select>-->
+                                    <select class="form-control" name="onsiteManager" required ngModel #onsManager="ngModel">
+                                     <option *ngFor="let p of obj" value="{{p}}">{{p}}</option>
+                                    </select>
+                                    <span *ngIf="!onsManager.valid && userForm.submitted" class="help-block">
+                                     Please select onsite manager
+                                   </span>
                                 </div>
                             </div>
                         </div>
                         <br>
-                        <button [disabled]="!userForm.form.valid" type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>

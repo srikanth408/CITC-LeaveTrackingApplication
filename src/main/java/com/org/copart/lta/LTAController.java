@@ -82,8 +82,8 @@ public class LTAController {
 			ubRes.setHeader("Failure");
 		}
 		MailSender m = new LogindetailsMailSender();
-		//m.sendMail(LoggedUser.getEmail(),new String[]{newUser.getEmail()},null,null,newUser);
-		m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{newUser.getEmail()},null,null,newUser);
+		m.sendMail(LoggedUser.getEmail(),new String[]{newUser.getEmail()},null,null,newUser);
+		//m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{newUser.getEmail()},null,null,newUser);
 
 		return ubRes;
 	}
@@ -114,8 +114,8 @@ public class LTAController {
 		UserBean manager = service.getUserDetailByID(ub.getResourceManager());
 		UserBean onSiteManager = service.getUserDetailByID(ub.getOnsiteManager());
 		MailSender m = new ApplyLeaveMailSender();
-		//m.sendMail(ub.getEmail(),new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
-		m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
+		m.sendMail(ub.getEmail(),new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
+		//m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
 
 		return ubRes;
 	}
@@ -173,9 +173,9 @@ public class LTAController {
 			UserBean onSiteManager = service.getUserDetailByID(user.getOnsiteManager());
 			
 			MailSender m = new ApproveLeaveMailSender();
-			//m.sendMail(ub.getEmail(), new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
+			m.sendMail(ub.getEmail(), new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
 			
-			m.sendMail("srikanthreddy.kaipu@copart.com", new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
+			//m.sendMail("srikanthreddy.kaipu@copart.com", new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
 		} catch (Exception e) {
 			lb.setHeader("Failed");
 		}
@@ -186,15 +186,22 @@ public class LTAController {
 	@GET
 	@Path("/listUser")
 	@Produces(MediaType.APPLICATION_JSON)
-	public LTAResponseDTO<List<UserBean>> getUserList(@Context HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		UserBean manager = (UserBean) session.getAttribute("user");
+	public LTAResponseDTO<List<UserBean>> getUserList() {
 		LTAResponseDTO<List<UserBean>> userList = new LTAResponseDTO<>();
-		
-		userList.setBody(new LTAServiceImpl().getAllUsersUnderRM(manager.getEmpCode()));
+		userList.setBody(new LTAServiceImpl().getAllUsersUnderRM());
 		return userList;
 	}
 
+	
+	
+	@GET
+	@Path("/holidays")
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<List<String>> getHolidays() {
+		LTAResponseDTO<List<String>> hl = new LTAResponseDTO<>();
+		hl.setBody(new LTAServiceImpl().getholidaylist());
+		return hl;
+	}
 	@GET
 	@Path("/listLeavesApplied")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -218,14 +225,7 @@ public class LTAController {
 
 	
 
-	@GET
-	@Path("/holidays")
-	@Produces(MediaType.APPLICATION_JSON)
-	public LTAResponseDTO<List<String>> getHolidays() {
-		LTAResponseDTO<List<String>> hl = new LTAResponseDTO<>();
-		hl.setBody(new LTAServiceImpl().getholidaylist());
-		return hl;
-	}
+	
 	@GET
 	@Path("/managers")
 	@Produces(MediaType.APPLICATION_JSON)

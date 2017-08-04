@@ -3,7 +3,9 @@ import { Injectable } from "@angular/core";
 export class EmpDataService {
     empInfo: any;
     public loggedIn: boolean;
+    public isManager: boolean;
     public isAdmin: boolean;
+    public isMainAdmin:boolean;
     public loading: boolean = false;
 
     isLoggedIn() {

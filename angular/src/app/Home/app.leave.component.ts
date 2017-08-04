@@ -31,9 +31,9 @@ export class LeaveComponent {
     public todate_errorMsg: any;
     public leaves_errorMsg: any;
     public valid: boolean = false;
-    public totleavesOfCL = 0;
-    public totleavesOfSL = 0;
-    public totleavesOfPL = 0;
+    public totleavesOfCL;
+    public totleavesOfSL;
+    public totleavesOfPL;
 
     constructor(public routes: Router,
         public _service: EmployeedataService,
@@ -44,7 +44,7 @@ export class LeaveComponent {
 
     }
 
-    private myDatePickerOptions: IMyDpOptions = {
+    public myDatePickerOptions: IMyDpOptions = {
         // other options...
         dateFormat: 'mm/dd/yyyy',
     };
@@ -70,7 +70,7 @@ export class LeaveComponent {
                     opt.resetForm();
                     this.empDataSr.loading = false;
                     this.popToastSuccess();
-                } else if (res.header && res.header !== 'Ok') {
+                } else {
                     this.empDataSr.loading = false;
                     this.popToastFailed();
                 }
@@ -104,7 +104,9 @@ export class LeaveComponent {
         this._service.getLeaves(this.employees.empCode, this.reqType)
             .subscribe(data => {
                 this.leaveHistory = data;
-
+                this.totleavesOfCL = 0;
+                this.totleavesOfSL = 0;
+                this.totleavesOfPL = 0;
 
                 for (var i = 0; i < this.leaveHistory.length; i++) {
                     if (this.leaveHistory[i].status === "Pending" && this.leaveHistory[i].leaveType === "CL") {
@@ -117,10 +119,14 @@ export class LeaveComponent {
                         this.totleavesOfPL = this.totleavesOfPL + this.leaveHistory[i].leavesApplied;
                     }
 
-                }
 
+                }
+                this.totleavesOfCL = this.empDataSr.getEmpInfo().numOfCL - this.totleavesOfCL;
+                this.totleavesOfSL = this.empDataSr.getEmpInfo().numOfSL - this.totleavesOfSL;
+                this.totleavesOfPL = this.empDataSr.getEmpInfo().numOfPL - this.totleavesOfPL;
 
             });
+
 
 
     }
@@ -132,6 +138,12 @@ export class LeaveComponent {
     get isAdmin() {
         return this.empDataSr.isAdmin;
     }
+     get isManager() {
+        return this.empDataSr.isManager;
+    }
+    /*get isMainAdmin() {
+        return this.empDataSr.isMainAdmin;
+    }*/
     onChange(value, dtType) {
         var _fromdate = this.leave.fromdate ? this.leave.fromdate.formatted : '';
         var _todate = this.leave.todate ? this.leave.todate.formatted : '';
@@ -199,13 +211,13 @@ export class LeaveComponent {
             this.todate_errorMsg = "";
             this.valid = false;
         }
-        if (leavetype === "CL" && this.empDataSr.getEmpInfo().numOfCL < this.leaves) {
+        if (leavetype === "CL" && this.totleavesOfCL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
-        } else if (leavetype === "SL" && this.empDataSr.getEmpInfo().numOfSL < this.leaves) {
+        } else if (leavetype === "SL" && this.totleavesOfSL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
-        } else if (leavetype === "PL" && this.empDataSr.getEmpInfo().numOfPL < this.leaves) {
+        } else if (leavetype === "PL" && this.totleavesOfPL < this.leaves) {
             this.valid = true;
             this.leaves_errorMsg = " * No of leaves exceeded";
         } else {
