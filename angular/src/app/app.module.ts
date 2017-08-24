@@ -12,12 +12,15 @@ import { ToasterModule } from 'angular2-toaster';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
 import { MyDatePickerModule } from 'mydatepicker';
+import { PasswordInputComponent} from './Home/app.password-input';
+
 
 
 
 @NgModule({
-  imports: [BrowserModule, RoutingComponent, FormsModule, HttpModule,BrowserAnimationsModule,ToasterModule,Ng2FilterPipeModule,MyDatePickerModule],
-  declarations: [AppComponent, routingModuleComponent],
+  imports: [BrowserModule, RoutingComponent, FormsModule, HttpModule,BrowserAnimationsModule,ToasterModule,Ng2FilterPipeModule,
+  MyDatePickerModule],
+  declarations: [AppComponent, routingModuleComponent,PasswordInputComponent],
   bootstrap: [AppComponent],
   providers: [EmpDataService, EmployeedataService]
 })

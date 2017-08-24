@@ -16,11 +16,11 @@ public class DBConnection {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			dbConnect = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/lta_db?zeroDateTimeBehavior=convertToNull", "root", "root");
+					"jdbc:mysql://localhost:3306/lta_db?autoReconnect=true&zeroDateTimeBehavior=convertToNull", "root", "root");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException ex) {
-			// Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,s
+			// Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE,s  copart_lta , c0pArt#123
 			// null, ex);
 		}
 	}

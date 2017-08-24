@@ -55,7 +55,7 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("SELECT * FROM employee where empCode = ?");
+					.prepareStatement("SELECT e1.*,c.Onsitemanagers_Email FROM employee e1 Join onsitemanagerslist c on e1.onsiteManagerId=c.OnsiteManager_name where empCode = ?");
 			stmt.setString(1, id);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -73,6 +73,7 @@ public class LTADaoImpl {
 				ub.setDept(rs.getString("dept"));
 				ub.setEmpCode(rs.getString("empCode"));
 				ub.setUserRole(rs.getInt("userRole"));
+				ub.setOnsiteManagerName(rs.getString("Onsitemanagers_Email"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,6 +109,36 @@ public class LTADaoImpl {
 		}
 		return status;
 	}
+	public int addOnsiteManager(UserBean user) throws SQLException {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("INSERT INTO onsitemanagerslist(OnsiteManager_name, Onsitemanagers_Email, OnsiteManagers_Department) VALUES(?,?,?)");
+			stmt.setString(1, user.getOnsiteManagerName());
+			stmt.setString(2, user.getOnsiteManagerEmail());
+			stmt.setString(3, user.getOnsiteManagerDept());
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
+	public int addManager(UserBean user) throws SQLException {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("INSERT INTO managerslist(Manager_name, Managers_Id, Department) VALUES(?,?,?)");
+			stmt.setString(1, user.getResourceManagerName());
+			stmt.setString(2, user.getResourceManagerEmpCode());
+			stmt.setString(3, user.getResourceManagerDept());
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
 
 	public int applyLeave(LeaveBean lb) {
 		int status = 0;
@@ -136,8 +167,8 @@ public class LTADaoImpl {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
 					.prepareStatement("UPDATE employee SET firstName = ?, lastName = ?, middleName = ?, email = ?, managerId = ?,"
-							+ " onsiteManagerId = ?, directorId = ?, phone = ?, dept = ?, userRole = ?"
-							+ " WHERE empCode = ?  ");
+							+ " onsiteManagerId = ?, directorId = ?, phone = ?, dept = ?, userRole = ?,empCode = ? "
+							+ " WHERE employee_sno = ?  ");
 			stmt.setString(1, user.getFirstName());
 			stmt.setString(2, user.getLastName());
 			stmt.setString(3, user.getMiddleName());
@@ -149,6 +180,44 @@ public class LTADaoImpl {
 			stmt.setString(9, user.getDept());
 			stmt.setInt(10, user.getUserRole());
 			stmt.setString(11, user.getEmpCode());
+			stmt.setString(12, user.getReqId());
+			System.out.println(stmt);
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
+	public int editOnsiteManager(UserBean user) {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("UPDATE onsitemanagerslist SET  OnsiteManager_name = ?, OnsiteManagers_Department = ?, Onsitemanagers_Email = ?"
+							+ " WHERE OnsiteManagers_Sno = ?  ");
+			stmt.setString(1, user.getFirstName());
+			stmt.setString(2, user.getDept());
+			stmt.setString(3, user.getEmpCode());
+			stmt.setString(4, user.getReqId());
+			System.out.println(stmt);
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
+	
+	public int editManager(UserBean user) {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("UPDATE managerslist SET  Manager_name = ?, Department = ?, Managers_Id = ?"
+							+ " WHERE Managers_Sno = ?  ");
+			stmt.setString(1, user.getFirstName());
+			stmt.setString(2, user.getDept());
+			stmt.setString(3, user.getEmpCode());
+			stmt.setString(4, user.getReqId());
 			System.out.println(stmt);
 			status = stmt.executeUpdate();
 		} catch (Exception ex) {
@@ -170,6 +239,33 @@ public class LTADaoImpl {
 		}
 		return status;
 	}
+	
+	public int deleteOnsiteManager(UserBean user) {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("DELETE FROM onsitemanagerslist WHERE OnsiteManager_name = ? ");
+			stmt.setString(1, user.getFirstName());
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
+	public int deleteManager(UserBean user) {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("DELETE FROM managerslist WHERE Manager_name = ? ");
+			stmt.setString(1, user.getFirstName());
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
+	}
 
 	public List<UserBean> getAllUsersUnderRM() {
 		List<UserBean> ubList = new ArrayList<>();
@@ -181,6 +277,7 @@ public class LTADaoImpl {
 			UserBean ub = null;
 			while (rs.next()) {
 				ub = new UserBean();
+				ub.setReqId(rs.getString("employee_sno"));
 				ub.setFirstName(rs.getString("firstName"));
 				ub.setLastName(rs.getString("lastName"));
 				ub.setMiddleName(rs.getString("middleName"));
@@ -365,8 +462,8 @@ public class LTADaoImpl {
 
 	}
 
-	public List<String> getholidaylist() {
-		List<String> holidaylist = new ArrayList();
+	public List<UserBean> getholidaylist() {
+		List<UserBean> holidaylist = new ArrayList();
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			String query = "select * from holidaylist";
@@ -374,7 +471,10 @@ public class LTADaoImpl {
 			ResultSet rs = stmt.executeQuery();
 
 			while (rs.next()) {
-				holidaylist.add(rs.getString("Holiday_Date"));
+				UserBean ub = new UserBean();
+				ub.setReqId(rs.getString("Sno"));
+				ub.setHolidayDate(rs.getString("Holiday_Date"));
+				holidaylist.add(ub);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -391,6 +491,7 @@ public class LTADaoImpl {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				UserBean ub = new UserBean();
+				ub.setReqId(rs.getString("Managers_Sno"));
 				ub.setFirstName(rs.getString("Manager_name"));
 				ub.setDept(rs.getString("Department"));
 				ub.setEmpCode(rs.getString("Managers_Id"));
@@ -411,6 +512,7 @@ public class LTADaoImpl {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				UserBean ub = new UserBean();
+				ub.setReqId(rs.getString("OnsiteManagers_Sno"));
 				ub.setFirstName(rs.getString("OnsiteManager_name"));
 				ub.setDept(rs.getString("OnsiteManagers_Department"));
 				ub.setEmpCode(rs.getString("Onsitemanagers_Email"));
@@ -435,5 +537,21 @@ public class LTADaoImpl {
 			e.printStackTrace();
 		}
 
+	}
+	public int editHolidayList(UserBean user) {
+		int status = 0;
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			PreparedStatement stmt = conn
+					.prepareStatement("UPDATE holidaylist SET  Holiday_Date = ? "
+							+ " WHERE Sno = ?  ");
+			stmt.setString(1, user.getHolidayDate());
+			stmt.setString(2, user.getReqId());
+			System.out.println(stmt);
+			status = stmt.executeUpdate();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return status;
 	}
 }

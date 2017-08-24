@@ -77,7 +77,7 @@
                     <td>{{History.leaveType}}</td>
                     <td class="reason">{{History.reason}}</td>
                     <td>{{History.status}}</td>
-                    <button type="button" class="btn btn-mini btn-danger" (click)="cancelLeaveAction(i, 'Cancelled')">Cancel</button>
+                    <button [disabled]="History.cancelRequest" type="button" class="btn btn-mini btn-danger" (click)="cancelLeaveAction(i, 'Cancelled')">Cancel</button>
                 </tr>
             </tbody>
         </table>

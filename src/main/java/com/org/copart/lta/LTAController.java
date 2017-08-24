@@ -87,6 +87,38 @@ public class LTAController {
 
 		return ubRes;
 	}
+	
+	@POST
+	@Path("/addOnsiteManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> addOnsiteManager(UserBean newUser) throws SQLException {
+		LTAServiceImpl service = new LTAServiceImpl();
+		int status = new LTAServiceImpl().addOnsiteManager(newUser);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+		return ubRes;
+	}
+	
+	@POST
+	@Path("/addManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> addManager(UserBean newUser) throws SQLException {
+		LTAServiceImpl service = new LTAServiceImpl();
+		int status = new LTAServiceImpl().addManager(newUser);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+		return ubRes;
+	}
 
 	@POST
 	@Path("/applyLeave")
@@ -112,9 +144,9 @@ public class LTAController {
 			ubRes.setHeader("Unauthorised user.");
 		}
 		UserBean manager = service.getUserDetailByID(ub.getResourceManager());
-		UserBean onSiteManager = service.getUserDetailByID(ub.getOnsiteManager());
+		UserBean onSiteManager = service.getUserDetailByID(ub.getEmpCode());
 		MailSender m = new ApplyLeaveMailSender();
-		m.sendMail(ub.getEmail(),new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
+		m.sendMail(ub.getEmail(),new String[]{onSiteManager.getOnsiteManagerName()},new String[]{manager.getEmail()},lb,ub);
 		//m.sendMail("srikanthreddy.kaipu@copart.com",new String[]{onSiteManager.getEmail()},new String[]{manager.getEmail()},lb,ub);
 
 		return ubRes;
@@ -135,6 +167,53 @@ public class LTAController {
 
 		return ubRes;
 	}
+	@POST
+	@Path("/editOnsiteManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> editOnsiteManager(UserBean user) {
+		int status = new LTAServiceImpl().editOnsiteManager(user);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+
+		return ubRes;
+	}
+	
+	@POST
+	@Path("/editManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> editManager(UserBean user) {
+		int status = new LTAServiceImpl().editManager(user);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+
+		return ubRes;
+	}
+	
+	@POST
+	@Path("/editHolidayList")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> editHolidayList(UserBean user) {
+		int status = new LTAServiceImpl().editHolidayList(user);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+
+		return ubRes;
+	}
 
 	@POST
 	@Path("/deleteUser")
@@ -142,6 +221,37 @@ public class LTAController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public LTAResponseDTO<UserBean> deleteUser(UserBean user) {
 		int status = new LTAServiceImpl().deleteUser(user);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+
+		return ubRes;
+	}
+	@POST
+	@Path("/deleteOnsiteManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> deleteOnsiteManager(UserBean user) {
+		int status = new LTAServiceImpl().deleteOnsiteManager(user);
+		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
+		if (status > 0) {
+			ubRes.setHeader("Ok");
+		} else {
+			ubRes.setHeader("Failure");
+		}
+
+		return ubRes;
+	}
+	
+	@POST
+	@Path("/deleteManager")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<UserBean> deleteManager(UserBean user) {
+		int status = new LTAServiceImpl().deleteManager(user);
 		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
 		if (status > 0) {
 			ubRes.setHeader("Ok");
@@ -170,10 +280,10 @@ public class LTAController {
 			LeaveBean leave = service.getLeaveDeatails(reqId);
 			UserBean user = service.getUserDetailByID(leave.getemployeeId());
 			//UserBean manager = service.getUserDetailByID(ub.getResourceManager());
-			UserBean onSiteManager = service.getUserDetailByID(user.getOnsiteManager());
+			//UserBean onSiteManager = service.getUserDetailByID(user.getOnsiteManager());
 			
 			MailSender m = new ApproveLeaveMailSender();
-			m.sendMail(ub.getEmail(), new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
+			m.sendMail(ub.getEmail(), new String[] { user.getEmail() },	new String[] { user.getOnsiteManagerName() }, leave, ub);
 			
 			//m.sendMail("srikanthreddy.kaipu@copart.com", new String[] { user.getEmail() },	new String[] { onSiteManager.getEmail() }, leave, ub);
 		} catch (Exception e) {
@@ -197,8 +307,8 @@ public class LTAController {
 	@GET
 	@Path("/holidays")
 	@Produces(MediaType.APPLICATION_JSON)
-	public LTAResponseDTO<List<String>> getHolidays() {
-		LTAResponseDTO<List<String>> hl = new LTAResponseDTO<>();
+	public LTAResponseDTO<List<UserBean>> getHolidays() {
+		LTAResponseDTO<List<UserBean>> hl = new LTAResponseDTO<>();
 		hl.setBody(new LTAServiceImpl().getholidaylist());
 		return hl;
 	}

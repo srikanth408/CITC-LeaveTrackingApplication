@@ -11,7 +11,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Add New User Here </div>
                 <div class="panel-body">
-                    <form name="myform" #userForm="ngForm" (ngSubmit)="userForm.valid && onSubmit(userForm.value,userForm)" novalidate>
+                    <form name="myform" #userForm="ngForm" (ngSubmit)="userForm.valid &&  onSubmit(userForm.value,userForm)" novalidate>
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !fnameRef.valid }">
@@ -103,6 +103,7 @@
                                 <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !userRole.valid }">
                                     <label>User Role</label>
                                     <select ngModel name="userRole" class="form-control" required #userRole="ngModel">
+                                        <option value="" disabled>--select--</option>
                                 <option value="2">HRA</option>
                                 <option value="1">Manager</option>
                                 <option value="0">Employee</option>
@@ -117,9 +118,12 @@
                                     <label>Department</label>
                                     <!--<input class="form-control" name="dept" required ngModel [(ngModel)]="selectedPerson.dept" readonly>-->
                                     <select name="dept" ngModel class="form-control" required #dept="ngModel" (change)="onChanged($event.target.value)">
+                                        <option value="" disabled>--select--</option>
                                             <option value="QA">QA</option>
-                                            <option value="Dev">Devlopement</option>
-                                            <option value="IT">IT</option>
+                                            <option value="Dev">DEV</option>
+                                            <option value="IT">IT/INFRA</option>
+                                            <option value="HRA/Admin">HRA/Admin</option>
+                                            <option value="Director">Director</option>
                                          </select>
                                     <span *ngIf="!dept.valid && userForm.submitted" class="help-block">
                                      Please select department
@@ -133,6 +137,7 @@
                                             <option *ngFor="let p of managerslist" value={{p.empCode}}>{{p.firstName}}</option>
                                          </select>-->
                                     <select name="resourceManager" ngModel class="form-control" required #resManager="ngModel">
+                                           <option value="" disabled>--select--</option>
                                            <option *ngFor="let p of managerslist" value="{{p.empCode}}">{{p.firstName}}</option>
                                          </select>
                                     <span *ngIf="!resManager.valid && userForm.submitted" class="help-block">
@@ -147,6 +152,7 @@
                                             <option *ngFor="let p of onsitemanagerslist" value={{p.empCode}}>{{p.firstName}}</option>
                                     </select>-->
                                     <select class="form-control" name="onsiteManager" required ngModel #onsManager="ngModel">
+                                     <option value="" disabled>--select--</option>
                                      <option *ngFor="let p of obj" value="{{p}}">{{p}}</option>
                                     </select>
                                     <span *ngIf="!onsManager.valid && userForm.submitted" class="help-block">

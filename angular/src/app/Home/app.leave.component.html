@@ -75,7 +75,7 @@
                         <div class="col-sm-6">
                             <div>
                                 <label>From Date: </label>
-                                <my-date-picker [options]="myDatePickerOptions" ngModel name="fromDate"  required [(ngModel)]="leave.fromdate" (dateChanged)="onChange($event, 'F')"></my-date-picker>
+                                <my-date-picker [options]="myDatePickerOptions" ngModel name="fromDate" required [(ngModel)]="leave.fromdate" (dateChanged)="onChange($event, 'F')"></my-date-picker>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -90,7 +90,7 @@
                             <div>
                                 <label>Leave type: </label>
                                 <select ngModel name="leaveType" class="form-control" required [(ngModel)]="leave.leavetype" (change)="onChange($event,'')"> 
-                                    <option disabled>Select Leave type</option>
+                                    <option value="" disabled >--select--</option>
                                     <option value="CL">Casual leave</option>
                                     <option value="SL">Sick Leave</option>
                                     <option value="PL">Privilege Leave</option>

@@ -24,6 +24,9 @@ export class SignupComponent {
     public showId: boolean = true;
     public managerslist: any;
     public onsitemanagerslist: any;
+    public userList: any;
+    public errEmailMsg: any;
+    public errEmpCodeMsg: any;
     public obj = [];
 
 
@@ -36,6 +39,7 @@ export class SignupComponent {
 
         this.getmanagersList();
         this.getonsiteManagersList();
+        this.getuserlist();
 
     }
     getmanagersList() {
@@ -48,24 +52,51 @@ export class SignupComponent {
             .subscribe(data => this.onsitemanagerslist = data);
 
     }
-
-    onSubmit(value: Object, opt: any) {
-        this.empDataSr.loading = true;
-        this._restfull.saveRetur(value)
-            .subscribe((res) => {
-                if (res.header && res.header == 'Ok') {
-                    opt.resetForm();
-                    this.empDataSr.loading = false;
-                    this.popToastSuccess();
-                } else {
-                    this.empDataSr.loading = false;
-                    this.popToastFailed();
-                }
+    getuserlist() {
+        this._restfull.getEmployeeData()
+            .subscribe(data => {
+                this.userList = data;
 
             });
-
-
     }
+
+    onSubmit(value: any, opt: any) {
+        this.empDataSr.loading = true;
+        for (var i = 0; i < this.userList.length; i++) {
+            if (this.userList[i].email === value.email) {
+                this.empDataSr.loading = false;
+               this.popToastEmail();
+               return;
+              }else if (this.userList[i].empCode === value.empCode) {
+               this.empDataSr.loading = false;
+               this.popToastEmpcode();
+                return;
+            } 
+        }
+                 this._restfull.saveRetur(value)
+                    .subscribe((res) => {
+                        if (res.header && res.header == 'Ok') {
+                            opt.resetForm();
+                            this.empDataSr.loading = false;
+                            this.popToastSuccess();
+                            this.getuserlist();
+                        }else{
+                             this.empDataSr.loading = false;
+                             this.popToastFailed();
+                        } 
+                    });
+            
+    }
+
+ /*checkDuplicates(value:any){
+        for (var i = 0; i < this.userList.length; i++) {
+            if (this.userList[i].email === value.email) {
+               this.popToastEmail();
+              }else if (this.userList[i].empCode === value.empCode) {
+               this.popToastEmpcode();
+            } 
+        }
+    }*/
     popToastSuccess() {
         var toast: Toast = {
             type: 'success',
@@ -84,6 +115,22 @@ export class SignupComponent {
 
         this.toasterService.pop(toast);
     }
+    popToastEmail() {
+        var toast: Toast = {
+            type: 'error',
+            title: 'Email Already used'
+        };
+
+        this.toasterService.pop(toast);
+    }
+    popToastEmpcode() {
+        var toast: Toast = {
+            type: 'error',
+            title: 'Emp code Already used'
+        };
+
+        this.toasterService.pop(toast);
+    }
 
     onChanged($event: any) {
         var match = this.onsitemanagerslist.filter(x => x.dept === $event);
@@ -91,7 +138,7 @@ export class SignupComponent {
         match.forEach(element => {
             this.obj.push(element.firstName);
         });
-       
+
     }
     /*get isMainAdmin() {
         return this.empDataSr.isMainAdmin;

@@ -1,12 +1,26 @@
 webpackJsonp([1,4],{
 
 /***/ 100:
+/***/ (function(module, exports) {
+
+function webpackEmptyContext(req) {
+	throw new Error("Cannot find module '" + req + "'.");
+}
+webpackEmptyContext.keys = function() { return []; };
+webpackEmptyContext.resolve = webpackEmptyContext;
+module.exports = webpackEmptyContext;
+webpackEmptyContext.id = 100;
+
+
+/***/ }),
+
+/***/ 101:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(106);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__(115);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(116);
 
@@ -21,7 +35,7 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 107:
+/***/ 108:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49,6 +63,7 @@ var AdminComponent = (function () {
         this.empDataSr = empDataSr;
         this.toasterService = toasterService;
         this.EmployeeId = {};
+        this.cancelRequest = false;
         this.userFilter = { employeeName: '' };
     }
     AdminComponent.prototype.ngOnInit = function () {
@@ -75,7 +90,7 @@ var AdminComponent = (function () {
     };
     AdminComponent.prototype.cancelLeaveAction = function (index, status) {
         var _this = this;
-        if (window.confirm("Are you sure want to delete") && this.leaveHistory[index].status === "Approved") {
+        if (window.confirm("Are you sure want to Cancel") && this.leaveHistory[index].status === "Approved") {
             this.empDataSr.loading = true;
             this._service.ApproveRejectLeave(status, this.leaveHistory[index].reqId)
                 .subscribe(function (res) {
@@ -110,7 +125,18 @@ var AdminComponent = (function () {
     AdminComponent.prototype.getLeaveRequestHistory = function () {
         var _this = this;
         this._service.getLeavesApproveReject(this.EmployeeId.empCode, "A")
-            .subscribe(function (data) { return _this.leaveHistory = data; });
+            .subscribe(function (data) {
+            _this.leaveHistory = data;
+            var today = new Date().getTime();
+            for (var i = 0; i < _this.leaveHistory.length; i++) {
+                if (_this.leaveHistory[i].status === 'Rejected' || _this.leaveHistory[i].status === 'Cancelled' || today > new Date(_this.leaveHistory[i].toDate).getTime()) {
+                    _this.leaveHistory[i].cancelRequest = true;
+                }
+                else {
+                    _this.leaveHistory[i].cancelRequest = false;
+                }
+            }
+        });
     };
     AdminComponent.prototype.popToastSuccess = function () {
         var toast = {
@@ -143,7 +169,7 @@ var _a, _b, _c;
 
 /***/ }),
 
-/***/ 108:
+/***/ 109:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -151,7 +177,8 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EdituserComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -167,23 +194,49 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var EdituserComponent = (function () {
-    function EdituserComponent(_service, route, empDataSr, toasterService) {
+    function EdituserComponent(_service, _holidayService, route, empDataSr, toasterService) {
         this._service = _service;
+        this._holidayService = _holidayService;
         this.route = route;
         this.empDataSr = empDataSr;
         this.toasterService = toasterService;
         this.Save = false;
         this.Edit = true;
+        this.onsManagerEdit = true;
+        this.onsManagerSave = false;
+        this.managerEdit = true;
+        this.managerSave = false;
+        this.hDateEdit = true;
+        this.hDateSave = false;
         this.userFilter = { empCode: '' };
     }
     EdituserComponent.prototype.ngOnInit = function () {
         this.getEmployeeData();
+        this.getOnsiteManagersList();
+        this.getHolidaysList();
+        this.getManagersList();
     };
     EdituserComponent.prototype.getEmployeeData = function () {
         var _this = this;
         this._service.getEmployeeData()
             .subscribe(function (resEmployeeData) { return _this.employee = resEmployeeData; });
+    };
+    EdituserComponent.prototype.getOnsiteManagersList = function () {
+        var _this = this;
+        this._service.getOnsiteManagers()
+            .subscribe(function (data) { return _this.onsiteManagersList = data; });
+    };
+    EdituserComponent.prototype.getHolidaysList = function () {
+        var _this = this;
+        this._holidayService.getHolidays()
+            .subscribe(function (data) { return _this.holidaysList = data; });
+    };
+    EdituserComponent.prototype.getManagersList = function () {
+        var _this = this;
+        this._service.getManagers()
+            .subscribe(function (data) { return _this.managersList = data; });
     };
     EdituserComponent.prototype.edit = function (document, i) {
         this.editedIndex = i;
@@ -245,22 +298,163 @@ var EdituserComponent = (function () {
         };
         this.toasterService.pop(toast);
     };
+    EdituserComponent.prototype.onsiteManagerEdit = function (document, i) {
+        this.onsEditedIndex = i;
+        this.onsManagerEdit = false;
+        this.onsManagerSave = true;
+    };
+    EdituserComponent.prototype.onsiteManagerSave = function (i) {
+        var _this = this;
+        this.onsEditedIndex = false;
+        this.onsManagerEdit = true;
+        this.onsManagerSave = false;
+        this.empDataSr.loading = true;
+        var savedata = this.onsiteManagersList[i];
+        this._service.saveOnsiteManagerDetails(savedata)
+            .subscribe(function (res) {
+            if (res.header && res.header == 'Ok') {
+                _this.getOnsiteManagersList();
+                _this.empDataSr.loading = false;
+                _this.popToastSuccess();
+            }
+            else if (res.header && res.header !== 'Ok') {
+                _this.empDataSr.loading = false;
+                _this.popToastFailed();
+            }
+        });
+    };
+    EdituserComponent.prototype.onsiteManagerDelete = function (i) {
+        var _this = this;
+        if (window.confirm("Are you sure want to delete")) {
+            this.empDataSr.loading = true;
+            var deletedata = this.onsiteManagersList[i];
+            this._service.deleteOnsiteManagerDetails(deletedata)
+                .subscribe(function (res) {
+                if (res.header && res.header == 'Ok') {
+                    _this.getOnsiteManagersList();
+                    _this.empDataSr.loading = false;
+                    _this.popToastSuccess();
+                }
+                else if (res.header && res.header !== 'Ok') {
+                    _this.empDataSr.loading = false;
+                    _this.popToastFailed();
+                }
+            });
+        }
+    };
+    EdituserComponent.prototype.addNewOnsiteManager = function (value, opt) {
+        var _this = this;
+        this._service.addOnsiteManager(value)
+            .subscribe(function (res) {
+            if (res.header && res.header == 'Ok') {
+                opt.resetForm();
+                _this.popToastSuccess();
+                _this.getOnsiteManagersList();
+            }
+            else {
+                _this.popToastFailed();
+            }
+        });
+    };
+    EdituserComponent.prototype.holidayDateEdit = function (document, i) {
+        this.hDateEditedIndex = i;
+        this.hDateEdit = false;
+        this.hDateSave = true;
+    };
+    EdituserComponent.prototype.holidayDateSave = function (i) {
+        var _this = this;
+        this.hDateEditedIndex = false;
+        this.hDateEdit = true;
+        this.hDateSave = false;
+        this.empDataSr.loading = true;
+        var savedata = this.holidaysList[i];
+        this._holidayService.saveHolidayList(savedata)
+            .subscribe(function (res) {
+            if (res.header && res.header == 'Ok') {
+                _this.getHolidaysList();
+                _this.empDataSr.loading = false;
+                _this.popToastSuccess();
+            }
+            else {
+                _this.empDataSr.loading = false;
+                _this.popToastFailed();
+            }
+        });
+    };
+    EdituserComponent.prototype.managerListEdit = function (document, i) {
+        this.managerEditedIndex = i;
+        this.managerEdit = false;
+        this.managerSave = true;
+    };
+    EdituserComponent.prototype.managerListSave = function (i) {
+        var _this = this;
+        this.managerEditedIndex = false;
+        this.managerEdit = true;
+        this.managerSave = false;
+        this.empDataSr.loading = true;
+        var savedata = this.managersList[i];
+        this._service.saveManagerDetails(savedata)
+            .subscribe(function (res) {
+            if (res.header && res.header == 'Ok') {
+                _this.getManagersList();
+                _this.empDataSr.loading = false;
+                _this.popToastSuccess();
+            }
+            else {
+                _this.empDataSr.loading = false;
+                _this.popToastFailed();
+            }
+        });
+    };
+    EdituserComponent.prototype.managerDelete = function (i) {
+        var _this = this;
+        if (window.confirm("Are you sure want to delete")) {
+            this.empDataSr.loading = true;
+            var deletedata = this.managersList[i];
+            this._service.deleteManagerDetails(deletedata)
+                .subscribe(function (res) {
+                if (res.header && res.header == 'Ok') {
+                    _this.getManagersList();
+                    _this.empDataSr.loading = false;
+                    _this.popToastSuccess();
+                }
+                else {
+                    _this.empDataSr.loading = false;
+                    _this.popToastFailed();
+                }
+            });
+        }
+    };
+    EdituserComponent.prototype.addNewManager = function (value, opt) {
+        var _this = this;
+        this._service.addManager(value)
+            .subscribe(function (res) {
+            if (res.header && res.header == 'Ok') {
+                opt.resetForm();
+                _this.popToastSuccess();
+                _this.getManagersList();
+            }
+            else {
+                _this.popToastFailed();
+            }
+        });
+    };
     return EdituserComponent;
 }());
 EdituserComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         template: __webpack_require__(194),
-        providers: [__WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */]],
+        providers: [__WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */], __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__["a" /* holidayService */]],
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__["b" /* ToasterService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_angular2_toaster__["b" /* ToasterService */]) === "function" && _d || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__app_service__["a" /* EmployeedataService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__["a" /* holidayService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__["a" /* holidayService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_model__["a" /* EmpDataService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__["b" /* ToasterService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__["b" /* ToasterService */]) === "function" && _e || Object])
 ], EdituserComponent);
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 //# sourceMappingURL=app.edituser.component.js.map
 
 /***/ }),
 
-/***/ 109:
+/***/ 110:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -302,6 +496,7 @@ var SignupComponent = (function () {
     SignupComponent.prototype.ngOnInit = function () {
         this.getmanagersList();
         this.getonsiteManagersList();
+        this.getuserlist();
     };
     SignupComponent.prototype.getmanagersList = function () {
         var _this = this;
@@ -313,15 +508,35 @@ var SignupComponent = (function () {
         this._restfull.getOnsiteManagers()
             .subscribe(function (data) { return _this.onsitemanagerslist = data; });
     };
+    SignupComponent.prototype.getuserlist = function () {
+        var _this = this;
+        this._restfull.getEmployeeData()
+            .subscribe(function (data) {
+            _this.userList = data;
+        });
+    };
     SignupComponent.prototype.onSubmit = function (value, opt) {
         var _this = this;
         this.empDataSr.loading = true;
+        for (var i = 0; i < this.userList.length; i++) {
+            if (this.userList[i].email === value.email) {
+                this.empDataSr.loading = false;
+                this.popToastEmail();
+                return;
+            }
+            else if (this.userList[i].empCode === value.empCode) {
+                this.empDataSr.loading = false;
+                this.popToastEmpcode();
+                return;
+            }
+        }
         this._restfull.saveRetur(value)
             .subscribe(function (res) {
             if (res.header && res.header == 'Ok') {
                 opt.resetForm();
                 _this.empDataSr.loading = false;
                 _this.popToastSuccess();
+                _this.getuserlist();
             }
             else {
                 _this.empDataSr.loading = false;
@@ -329,6 +544,15 @@ var SignupComponent = (function () {
             }
         });
     };
+    /*checkDuplicates(value:any){
+           for (var i = 0; i < this.userList.length; i++) {
+               if (this.userList[i].email === value.email) {
+                  this.popToastEmail();
+                 }else if (this.userList[i].empCode === value.empCode) {
+                  this.popToastEmpcode();
+               }
+           }
+       }*/
     SignupComponent.prototype.popToastSuccess = function () {
         var toast = {
             type: 'success',
@@ -342,6 +566,20 @@ var SignupComponent = (function () {
             type: 'error',
             title: 'Error in while submitting your record',
             body: 'Thank you'
+        };
+        this.toasterService.pop(toast);
+    };
+    SignupComponent.prototype.popToastEmail = function () {
+        var toast = {
+            type: 'error',
+            title: 'Email Already used'
+        };
+        this.toasterService.pop(toast);
+    };
+    SignupComponent.prototype.popToastEmpcode = function () {
+        var toast = {
+            type: 'error',
+            title: 'Emp code Already used'
         };
         this.toasterService.pop(toast);
     };
@@ -369,7 +607,7 @@ var _a, _b, _c, _d;
 
 /***/ }),
 
-/***/ 110:
+/***/ 111:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -377,7 +615,7 @@ var _a, _b, _c, _d;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_holidayservice__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_toaster__ = __webpack_require__(14);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LeaveComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -416,6 +654,7 @@ var LeaveComponent = (function () {
         this.employees = this.empDataSr.getEmpInfo();
         this.getholidaysList();
         this.getleavesHistory();
+        this.leave.leavetype = '';
     };
     LeaveComponent.prototype.OnSubmit = function (value, opt) {
         var _this = this;
@@ -544,8 +783,8 @@ var LeaveComponent = (function () {
             }
             var count = 0;
             for (var i_1 = 0; i_1 < this.holidays.length; i_1++) {
-                var holiday = new Date(this.holidays[i_1]);
-                if ((this.holidays[i_1] <= date2 && this.holidays[i_1] >= date1) && (holiday.getDay() !== 0 && holiday.getDay() !== 6)) {
+                var holiday = new Date(this.holidays[i_1].holidayDate);
+                if ((this.holidays[i_1].holidayDate <= date2 && this.holidays[i_1].holidayDate >= date1) && (holiday.getDay() !== 0 && holiday.getDay() !== 6)) {
                     count++;
                 }
             }
@@ -593,7 +832,7 @@ var _a, _b, _c, _d, _e;
 
 /***/ }),
 
-/***/ 111:
+/***/ 112:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -620,6 +859,7 @@ var SetPasswordComponent = (function () {
         this._restfull = _restfull;
         this.empDataSr = empDataSr;
         this.toasterService = toasterService;
+        this.show = false;
     }
     SetPasswordComponent.prototype.onSubmit = function (value, opt) {
         var _this = this;
@@ -653,6 +893,18 @@ var SetPasswordComponent = (function () {
         };
         this.toasterService.pop(toast);
     };
+    SetPasswordComponent.prototype.toggleShow = function () {
+        this.show = !this.show;
+        if (this.show) {
+            this.input.changeType("text");
+        }
+        else {
+            this.input.changeType("password");
+        }
+    };
+    SetPasswordComponent.prototype.changeType = function (type) {
+        this.type = type;
+    };
     return SetPasswordComponent;
 }());
 SetPasswordComponent = __decorate([
@@ -669,7 +921,7 @@ var _a, _b, _c;
 
 /***/ }),
 
-/***/ 112:
+/***/ 113:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -781,7 +1033,7 @@ var _a, _b, _c, _d;
 
 /***/ }),
 
-/***/ 113:
+/***/ 114:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -933,51 +1185,6 @@ var _a, _b, _c, _d;
 
 /***/ }),
 
-/***/ 114:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return holidayService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-var holidayService = (function () {
-    function holidayService(_router, _http) {
-        this._router = _router;
-        this._http = _http;
-        this._url = '/copartLTA/rest/api/v1/lta/holidays';
-    }
-    holidayService.prototype.getHolidays = function () {
-        return this._http.get(this._url)
-            .map(function (response) { return response.json().body; });
-    };
-    return holidayService;
-}());
-holidayService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["d" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["d" /* Http */]) === "function" && _b || Object])
-], holidayService);
-
-var _a, _b;
-//# sourceMappingURL=app.holidayservice.js.map
-
-/***/ }),
-
 /***/ 115:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -986,15 +1193,16 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(113);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_routing__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_routing__ = __webpack_require__(69);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_model__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_service__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angular2_toaster__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_platform_browser_animations__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__angular_platform_browser_animations__ = __webpack_require__(107);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__ = __webpack_require__(191);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_mydatepicker__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__Home_app_password_input__ = __webpack_require__(233);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1015,6 +1223,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+
 var AppModule = (function () {
     function AppModule() {
     }
@@ -1022,8 +1231,9 @@ var AppModule = (function () {
 }());
 AppModule = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
-        imports: [__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_5__app_routing__["a" /* RoutingComponent */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* HttpModule */], __WEBPACK_IMPORTED_MODULE_9__angular_platform_browser_animations__["a" /* BrowserAnimationsModule */], __WEBPACK_IMPORTED_MODULE_8_angular2_toaster__["a" /* ToasterModule */], __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__["Ng2FilterPipeModule"], __WEBPACK_IMPORTED_MODULE_11_mydatepicker__["MyDatePickerModule"]],
-        declarations: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */], __WEBPACK_IMPORTED_MODULE_5__app_routing__["b" /* routingModuleComponent */]],
+        imports: [__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_5__app_routing__["a" /* RoutingComponent */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* HttpModule */], __WEBPACK_IMPORTED_MODULE_9__angular_platform_browser_animations__["a" /* BrowserAnimationsModule */], __WEBPACK_IMPORTED_MODULE_8_angular2_toaster__["a" /* ToasterModule */], __WEBPACK_IMPORTED_MODULE_10_ng2_filter_pipe__["Ng2FilterPipeModule"],
+            __WEBPACK_IMPORTED_MODULE_11_mydatepicker__["MyDatePickerModule"]],
+        declarations: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */], __WEBPACK_IMPORTED_MODULE_5__app_routing__["b" /* routingModuleComponent */], __WEBPACK_IMPORTED_MODULE_12__Home_app_password_input__["a" /* PasswordInputComponent */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]],
         providers: [__WEBPACK_IMPORTED_MODULE_6__app_model__["a" /* EmpDataService */], __WEBPACK_IMPORTED_MODULE_7__app_service__["a" /* EmployeedataService */]]
     })
@@ -1097,7 +1307,7 @@ EmpDataService = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmployeedataService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1129,6 +1339,12 @@ var EmployeedataService = (function () {
         this._ManagersListUrl = '/copartLTA/rest/api/v1/lta/managers';
         this._OnsiteManagersListUrl = '/copartLTA/rest/api/v1/lta/onsitemanagers';
         this._ResetPasswordUrl = '/copartLTA/rest/api/v1/lta/resetPassword';
+        this._deleteOnsiteManagerUrl = '/copartLTA/rest/api/v1/lta/deleteOnsiteManager';
+        this._saveOnsiteManagerUrl = '/copartLTA/rest/api/v1/lta/editOnsiteManager';
+        this._addOnsiteManagerUrl = '/copartLTA/rest/api/v1/lta/addOnsiteManager';
+        this._deleteManagerUrl = '/copartLTA/rest/api/v1/lta/deleteManager';
+        this._saveManagerUrl = '/copartLTA/rest/api/v1/lta/editManager';
+        this._addManagerUrl = '/copartLTA/rest/api/v1/lta/addManager';
     }
     EmployeedataService.prototype.getEmployees = function (opt) {
         //Change the following method to post for server authentication.
@@ -1201,6 +1417,54 @@ var EmployeedataService = (function () {
         return this._http.get(this._OnsiteManagersListUrl)
             .map(function (response) { return response.json().body; });
     };
+    EmployeedataService.prototype.saveOnsiteManagerDetails = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._saveOnsiteManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    EmployeedataService.prototype.deleteOnsiteManagerDetails = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._deleteOnsiteManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    EmployeedataService.prototype.addOnsiteManager = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._addOnsiteManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    EmployeedataService.prototype.saveManagerDetails = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._saveManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    EmployeedataService.prototype.deleteManagerDetails = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._deleteManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    EmployeedataService.prototype.addManager = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this._addManagerUrl, data, headers)
+            .map(function (res) { return res.json(); });
+    };
     return EmployeedataService;
 }());
 EmployeedataService = __decorate([
@@ -1234,42 +1498,42 @@ module.exports = module.exports.toString();
 /***/ 193:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li class=\"active\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave Requests </div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th>Employee Name</th>\n                    <th>Resource Manager Name</th>\n                    <th>CL's</th>\n                    <th>SL's</th>\n                    <th>PL's </th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Action</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let employees of employee;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{employees.employeeName}}</td>\n                    <td>{{employees.resourceManager}}</td>\n                    <td>{{employees.numOfCL}}</td>\n                    <td>{{employees.numOfSL}}</td>\n                    <td>{{employees.numOfPL}}</td>\n                    <td>{{employees.leavesApplied}}</td>\n                    <td>{{employees.fromDate}}</td>\n                    <td>{{employees.toDate}}</td>\n                    <td>{{employees.leaveType}}</td>\n                    <td class=\"reason\">{{employees.reason}}</td>\n                    <td>{{employees.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-success\" (click)=\"approveRejectAction(i, 'Approved')\"><span class=\"glyphicon glyphicon-ok\"></span></button>\n                        <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"approveRejectAction(i, 'Rejected')\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave History</div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.employeeName\" placeholder=\"Employee Name\"></th>\n                    <th>Resource Manager Name</th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Cancel</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let History of leaveHistory | filterBy: userFilter;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{History.employeeName}}</td>\n                    <td>{{History.resourceManager}}</td>\n                    <td>{{History.leavesApplied}}</td>\n                    <td>{{History.fromDate}}</td>\n                    <td>{{History.toDate}}</td>\n                    <td>{{History.leaveType}}</td>\n                    <td class=\"reason\">{{History.reason}}</td>\n                    <td>{{History.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"cancelLeaveAction(i, 'Cancelled')\">Cancel</button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li class=\"active\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave Requests </div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th>Employee Name</th>\n                    <th>Resource Manager Name</th>\n                    <th>CL's</th>\n                    <th>SL's</th>\n                    <th>PL's </th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Action</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let employees of employee;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{employees.employeeName}}</td>\n                    <td>{{employees.resourceManager}}</td>\n                    <td>{{employees.numOfCL}}</td>\n                    <td>{{employees.numOfSL}}</td>\n                    <td>{{employees.numOfPL}}</td>\n                    <td>{{employees.leavesApplied}}</td>\n                    <td>{{employees.fromDate}}</td>\n                    <td>{{employees.toDate}}</td>\n                    <td>{{employees.leaveType}}</td>\n                    <td class=\"reason\">{{employees.reason}}</td>\n                    <td>{{employees.status}}</td>\n                    <button type=\"button\" class=\"btn btn-mini btn-success\" (click)=\"approveRejectAction(i, 'Approved')\"><span class=\"glyphicon glyphicon-ok\"></span></button>\n                        <button type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"approveRejectAction(i, 'Rejected')\"><span class=\"glyphicon glyphicon-remove\"></span></button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave History</div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.employeeName\" placeholder=\"Employee Name\"></th>\n                    <th>Resource Manager Name</th>\n                    <th>Leaves applied</th>\n                    <th>From Date</th>\n                    <th>To date</th>\n                    <th>Leave Type</th>\n                    <th>Reason</th>\n                    <th>Status</th>\n                    <th>Cancel</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let History of leaveHistory | filterBy: userFilter;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>{{History.employeeName}}</td>\n                    <td>{{History.resourceManager}}</td>\n                    <td>{{History.leavesApplied}}</td>\n                    <td>{{History.fromDate}}</td>\n                    <td>{{History.toDate}}</td>\n                    <td>{{History.leaveType}}</td>\n                    <td class=\"reason\">{{History.reason}}</td>\n                    <td>{{History.status}}</td>\n                    <button [disabled]=\"History.cancelRequest\" type=\"button\" class=\"btn btn-mini btn-danger\" (click)=\"cancelLeaveAction(i, 'Cancelled')\">Cancel</button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 194:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li class=\"active\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Welcome to Employees list of Copart</div>\n    <div class=\"panel-body table-responsive mytable\">\n        <table class=\"table table-striped\" id=\"mytable\">\n            <thead>\n                <tr>\n                    <th>Sno</th>\n                    <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.empCode\" placeholder=\"Employee Code\"></th>\n                    <th>First Name</th>\n                    <th>Middle Name</th>\n                    <th>Last Name</th>\n                    <th>Email</th>\n                    <th>Resource Manager Id</th>\n                    <th>Onsite Manager Id</th>\n                    <th>Director</th>\n                    <th>Phone</th>\n                    <th>Department</th>\n                    <th>User Role</th>\n                    <th>Edit/Save/Delete</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr *ngFor=\"let employees of employee | filterBy: userFilter;let i = index;\">\n                    <td>{{i+1}}</td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.empCode}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.empCode\" value={{employees.empCode}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.firstName}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.firstName\" value={{employees.firstName}} *ngIf=\"editedIndex === i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.middleName}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.middleName\" value={{employees.middleName}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.lastName}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.lastName\" value={{employees.lastName}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.email}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.email\" value={{employees.email}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.resourceManager}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.resourceManager\" value={{employees.resourceManager}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.onsiteManager}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.onsiteManager\" value={{employees.onsiteManager}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.director}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.director\" value={{employees.director}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.phone}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.phone\" value={{employees.phone}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.dept}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.dept\" value={{employees.dept}} *ngIf=\"editedIndex===i\"></td>\n                    <td>\n                        <span *ngIf=\"editedIndex !== i\">{{employees.userRole}}</span>\n                        <input type=\"text\" [(ngModel)]=\"employees.userRole\" value={{employees.userRole}} *ngIf=\"editedIndex===i\"></td>\n                    <button *ngIf=\"Edit\" (click)=\"edit(employees,i)\" type=\"button\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-pencil\"></i></button>\n                    <button *ngIf=\"editedIndex === i && Save\" (click)=\"save(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-ok\"></i></button>\n                    <button (click)=\"delete(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-trash\"></i></button>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li class=\"active\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div>\n    <div class=\"panel panel-primary\">\n        <div class=\"panel-heading\">Welcome to Employees List of Copart</div>\n        <div class=\"panel-body table-responsive mytable\">\n            <table class=\"table table-striped\" id=\"mytable\">\n                <thead>\n                    <tr>\n                        <th>Sno</th>\n                        <th style=\"table-layout:fixed;width:13%;\"><input class=\"form-control\" type=\"search\" [(ngModel)]=\"userFilter.empCode\" placeholder=\"Employee Code\"></th>\n                        <th>First Name</th>\n                        <th>Middle Name</th>\n                        <th>Last Name</th>\n                        <th>Email</th>\n                        <th>Resource Manager Id</th>\n                        <th>Onsite Manager Name</th>\n                        <th>Director</th>\n                        <th>Phone</th>\n                        <th>Department</th>\n                        <th>User Role</th>\n                        <th>Edit/Save/Delete</th>\n                    </tr>\n                </thead>\n                <tbody>\n                    <tr *ngFor=\"let employees of employee | filterBy: userFilter;let i = index;\">\n                        <td>{{i+1}}</td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.empCode}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.empCode\" value={{employees.empCode}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.firstName}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.firstName\" value={{employees.firstName}} *ngIf=\"editedIndex === i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.middleName}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.middleName\" value={{employees.middleName}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.lastName}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.lastName\" value={{employees.lastName}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.email}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.email\" value={{employees.email}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.resourceManager}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.resourceManager\" value={{employees.resourceManager}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.onsiteManager}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.onsiteManager\" value={{employees.onsiteManager}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.director}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.director\" value={{employees.director}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.phone}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.phone\" value={{employees.phone}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.dept}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.dept\" value={{employees.dept}} *ngIf=\"editedIndex===i\"></td>\n                        <td>\n                            <span *ngIf=\"editedIndex !== i\">{{employees.userRole}}</span>\n                            <input type=\"text\" [(ngModel)]=\"employees.userRole\" value={{employees.userRole}} *ngIf=\"editedIndex===i\"></td>\n                        <button *ngIf=\"Edit\" (click)=\"edit(employees,i)\" type=\"button\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-pencil\"></i></button>\n                        <button *ngIf=\"editedIndex === i && Save\" (click)=\"save(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-ok\"></i></button>\n                        <button (click)=\"delete(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-trash\"></i></button>\n                    </tr>\n                </tbody>\n            </table>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div class=\"col-md-8\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome to OnsiteManagers List of Copart <span><a data-toggle=\"modal\" data-target=\"#addOnsiteManager\" style=\"color:white\"class=\"pull-right\">Add New User</a></span></div>\n                <div class=\"panel-body table-responsive mytable\">\n                    <table class=\"table table-striped\" id=\"mytable\">\n                        <thead>\n                            <tr>\n                                <th>Sno</th>\n                                <th>OnsiteManager Name</th>\n                                <th>OnsiteManager Email</th>\n                                <th>OnsiteManager Department</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr *ngFor=\"let onsitelist of onsiteManagersList ;let i = index;\">\n                                <td>{{i+1}}</td>\n                                <td><span *ngIf=\"onsEditedIndex !== i\">{{onsitelist.firstName}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"onsitelist.firstName\" value={{onsitelist.firstName}} *ngIf=\"onsEditedIndex===i\"></td>\n                                <td><span *ngIf=\"onsEditedIndex !== i\">{{onsitelist.empCode}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"onsitelist.empCode\" value={{onsitelist.empCode}} *ngIf=\"onsEditedIndex===i\"></td>\n                                <td><span *ngIf=\"onsEditedIndex !== i\">{{onsitelist.dept}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"onsitelist.dept\" value={{onsitelist.dept}} *ngIf=\"onsEditedIndex===i\"></td>\n                                <button *ngIf=\"onsManagerEdit\" (click)=\"onsiteManagerEdit(onsitelist,i)\" type=\"button\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-pencil\"></i></button>\n                                <button *ngIf=\"onsEditedIndex === i && onsManagerSave\" (click)=\"onsiteManagerSave(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-ok\"></i></button>\n                                <button (click)=\"onsiteManagerDelete(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-trash\"></i></button>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-4\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome to Holidays List of Copart</div>\n                <div class=\"panel-body table-responsive mytable\">\n                    <table class=\"table table-striped\" id=\"mytable\">\n                        <thead>\n                            <tr>\n                                <th>Sno</th>\n                                <th>Holiday Date</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr *ngFor=\"let holidaylist of holidaysList ;let i = index;\">\n                                <td>{{i+1}}</td>\n                                <td><span *ngIf=\"hDateEditedIndex !== i\">{{holidaylist.holidayDate}}</span>\n                                <input type=\"text\" [(ngModel)]=\"holidaylist.holidayDate\" value={{holidaylist.holidayDate}} *ngIf=\"hDateEditedIndex===i\"></td>\n                                <button *ngIf=\"hDateEdit\" (click)=\"holidayDateEdit(holidaylist,i)\" type=\"button\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-pencil\"></i></button>\n                                <button *ngIf=\"hDateEditedIndex === i && hDateSave\" (click)=\"holidayDateSave(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-ok\"></i></button>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n    </div>\n     <div class=\"row\">\n        <div class=\"col-md-8\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome to Managers List of Copart <span><a data-toggle=\"modal\" data-target=\"#addManager\" style=\"color:white\"class=\"pull-right\">Add New User</a></span></div>\n                <div class=\"panel-body table-responsive mytable\">\n                    <table class=\"table table-striped\" id=\"mytable\">\n                        <thead>\n                            <tr>\n                                <th>Sno</th>\n                                <th>Manager Emp Code</th>\n                                <th>Manager Name</th>\n                                <th>Manager Department</th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <tr *ngFor=\"let managerlist of managersList ;let i = index;\">\n                                <td>{{i+1}}</td>\n                                <td><span *ngIf=\"managerEditedIndex !== i\">{{managerlist.empCode}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"managerlist.empCode\" value={{managerlist.empCode}} *ngIf=\"managerEditedIndex===i\"></td>\n                                <td><span *ngIf=\"managerEditedIndex !== i\">{{managerlist.firstName}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"managerlist.firstName\" value={{managerlist.firstName}} *ngIf=\"managerEditedIndex===i\"></td>\n                                <td><span *ngIf=\"managerEditedIndex !== i\">{{managerlist.dept}}</span>\n                                    <input type=\"text\" [(ngModel)]=\"managerlist.dept\" value={{managerlist.dept}} *ngIf=\"managerEditedIndex===i\"></td>\n                                <button *ngIf=\"managerEdit\" (click)=\"managerListEdit(managerlist,i)\" type=\"button\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-pencil\"></i></button>\n                                <button *ngIf=\"managerEditedIndex === i && managerSave\" (click)=\"managerListSave(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-ok\"></i></button>\n                                <button (click)=\"managerDelete(i)\" type=\"submit\" class=\"btn btn-default btn\"><i class=\"glyphicon glyphicon-trash\"></i></button>\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n    <div class=\"modal fade\" id=\"addOnsiteManager\" role=\"dialog\">\n        <div class=\"modal-dialog\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                    <h4 class=\"modal-title\">Add New Onsite Manager</h4>\n                </div>\n                <div class=\"modal-body\">\n                    <form name=\"onsmanagerform\" #onsmanagerForm=\"ngForm\" (ngSubmit)=\"onsmanagerForm.valid && addNewOnsiteManager(onsmanagerForm.value,onsmanagerForm)\"\n                        novalidate>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': onsmanagerForm.submitted && !onsnameRef.valid }\">\n                            <label>Name</label>\n                            <input type=\"text\" #onsnameRef=\"ngModel\" required class=\"form-control\" name=\"onsiteManagerName\" ngModel>\n                            <span *ngIf=\"!onsnameRef.valid  && onsmanagerForm.submitted\" class=\"help-block\">\n                                    Name is required\n                                   </span>\n                        </div>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': onsmanagerForm.submitted && !onsemailRef.valid }\">\n                            <label>Email</label>\n                            <input type=\"text\" #onsemailRef=\"ngModel\" pattern=\"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\" required class=\"form-control\"\n                                name=\"onsiteManagerEmail\" ngModel>\n                            <div *ngIf=\"onsemailRef.errors &&(onsemailRef.dirty)\" class=\"alert alert-danger\">\n                                <div [hidden]=\"!onsemailRef.errors.required\">\n                                    please enter your email address\n                                </div>\n                                <div [hidden]=\"!onsemailRef.errors.pattern\">\n                                    please enter valid email with '@' and '.'\n                                </div>\n                            </div>\n                            <span *ngIf=\" !onsemailRef.valid && onsmanagerForm.submitted\" class=\"help-block\">\n                                    Email is required\n                                   </span>\n                        </div>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': onsmanagerForm.submitted && !onsdept.valid }\">\n                            <label>Department</label>\n                            <select name=\"onsiteManagerDept\" ngModel class=\"form-control\" required #onsdept=\"ngModel\">\n                                        <option value=\"\" disabled>--select--</option>\n                                            <option value=\"QA\">QA</option>\n                                            <option value=\"Dev\">DEV</option>\n                                            <option value=\"IT\">IT</option>\n                                            <option value=\"HRA/Admin\">HRA/Admin</option>\n                                            <option value=\"Director\">Director</option>\n                                         </select>\n                            <span *ngIf=\"!onsdept.valid && onsmanagerForm.submitted\" class=\"help-block\">\n                                     Please select department\n                                   </span>\n                        </div>\n                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"modal fade\" id=\"addManager\" role=\"dialog\">\n        <div class=\"modal-dialog\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n                    <h4 class=\"modal-title\">Add New Manager</h4>\n                </div>\n                <div class=\"modal-body\">\n                    <form name=\"managerform\" #managerForm=\"ngForm\" (ngSubmit)=\"managerForm.valid && addNewManager(managerForm.value,managerForm)\"\n                        novalidate>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': managerForm.submitted && !mangagerEmpRef.valid }\">\n                            <label>Emp Code</label>\n                            <input type=\"text\" #mangagerEmpRef=\"ngModel\" required class=\"form-control\" name=\"resourceManagerEmpCode\" ngModel>\n                            <span *ngIf=\"!mangagerEmpRef.valid  && managerForm.submitted\" class=\"help-block\">\n                                    Emp code is required\n                                   </span>\n                        </div>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': managerForm.submitted && !managerNameRef.valid }\">\n                            <label>Name</label>\n                            <input type=\"text\" #managerNameRef=\"ngModel\" required class=\"form-control\" name=\"resourceManagerName\" ngModel>\n                            <span *ngIf=\" !managerNameRef.valid && managerForm.submitted\" class=\"help-block\">\n                                    Name is required\n                                   </span>\n                        </div>\n                        <div class=\"form-group\" [ngClass]=\"{ 'has-error': managerForm.submitted && !managerdept.valid }\">\n                            <label>Department</label>\n                            <select name=\"resourceManagerDept\" ngModel class=\"form-control\" required #managerdept=\"ngModel\">\n                                        <option value=\"\" disabled>--select--</option>\n                                            <option value=\"QA\">QA</option>\n                                            <option value=\"Dev\">DEV</option>\n                                            <option value=\"IT\">IT</option>\n                                            <option value=\"HRA/Admin\">HRA/Admin</option>\n                                            <option value=\"Director\">Director</option>\n                                         </select>\n                            <span *ngIf=\"!managerdept.valid && managerForm.submitted\" class=\"help-block\">\n                                     Please select department\n                                   </span>\n                        </div>\n                        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 195:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li class=\"active\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-sm-6\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Add New User Here </div>\n                <div class=\"panel-body\">\n                    <form name=\"myform\" #userForm=\"ngForm\" (ngSubmit)=\"userForm.valid && onSubmit(userForm.value,userForm)\" novalidate>\n                        <div class=\"row\">\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !fnameRef.valid }\">\n                                    <label>First Name</label>\n                                    <input type=\"text\" #fnameRef=\"ngModel\" required class=\"form-control\" name=\"firstName\" ngModel>\n                                    <span *ngIf=\"!fnameRef.valid  && userForm.submitted\" class=\"help-block\">\n                                    First Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>Middle Name</label>\n                                    <input type=\"text\" #middleRef=\"ngModel\" class=\"form-control\" name=\"middleName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !lnameRef.valid }\">\n                                    <label>Last Name</label>\n                                    <input type=\"text\" #lnameRef=\"ngModel\" required class=\"form-control\" name=\"lastName\" ngModel>\n                                    <span *ngIf=\" !lnameRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Last Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !emailRef.valid }\">\n                                    <label>Email</label>\n                                    <input type=\"text\" #emailRef=\"ngModel\" pattern=\"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\" required class=\"form-control\"\n                                        name=\"email\" ngModel>\n                                    <div *ngIf=\"emailRef.errors &&(emailRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!emailRef.errors.required\">\n                                            please enter your email address\n                                        </div>\n                                        <div [hidden]=\"!emailRef.errors.pattern\">\n                                            please enter valid email with '@' and '.'\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\" !emailRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Email is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !empRef.valid }\">\n                                    <label>Emp Code</label>\n                                    <input type=\"text\" #empRef=\"ngModel\" pattern=\"^[0-9]{4}$\" required class=\"form-control\" name=\"empCode\" ngModel>\n                                    <div *ngIf=\"empRef.errors &&(empRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!empRef.errors.required\">\n                                            please enter your emp code\n                                        </div>\n                                        <div [hidden]=\"!empRef.errors.pattern\">\n                                            please enter empcode with starting number between 0 to 9 and max 4\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!empRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Emp Code is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !phoneRef.valid }\">\n                                    <label>Phone</label>\n                                    <input #phoneRef=\"ngModel\" type=\"text\" pattern=\"^[0-9]{10}$\" required class=\"form-control\" name=\"phone\" ngModel>\n                                    <div *ngIf=\"phoneRef.errors &&(phoneRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!phoneRef.errors.required\">\n                                            please enter your phone number\n                                        </div>\n                                        <div [hidden]=\"!phoneRef.errors.pattern\">\n                                            please enter 10 digit phone number\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!phoneRef.valid && userForm.submitted\" class=\"help-block\">\n                                Phone number is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dirRef.valid }\">\n                                    <label>Director</label>\n                                    <input type=\"text\" #dirRef=\"ngModel\" class=\"form-control\" name=\"director\" required ngModel>\n                                    <span *ngIf=\"!dirRef.valid && userForm.submitted\" class=\"help-block\">\n                                Director name is required\n                                   </span>\n                                </div>\n\n                            </div>\n                            <div class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !userRole.valid }\">\n                                    <label>User Role</label>\n                                    <select ngModel name=\"userRole\" class=\"form-control\" required #userRole=\"ngModel\">\n                                <option value=\"2\">HRA</option>\n                                <option value=\"1\">Manager</option>\n                                <option value=\"0\">Employee</option>\n                                   </select>\n                                    <span *ngIf=\"!userRole.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select user role\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dept.valid }\">\n                                    <label>Department</label>\n                                    <!--<input class=\"form-control\" name=\"dept\" required ngModel [(ngModel)]=\"selectedPerson.dept\" readonly>-->\n                                    <select name=\"dept\" ngModel class=\"form-control\" required #dept=\"ngModel\" (change)=\"onChanged($event.target.value)\">\n                                            <option value=\"QA\">QA</option>\n                                            <option value=\"Dev\">Devlopement</option>\n                                            <option value=\"IT\">IT</option>\n                                         </select>\n                                    <span *ngIf=\"!dept.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select department\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !resManager.valid }\">\n                                    <label>Resource Manager</label>\n                                    <!-- <select name=\"resourceManager\" ngModel class=\"form-control\" required (change)=\"onChanged($event.target.value)\">\n                                            <option *ngFor=\"let p of managerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                         </select>-->\n                                    <select name=\"resourceManager\" ngModel class=\"form-control\" required #resManager=\"ngModel\">\n                                           <option *ngFor=\"let p of managerslist\" value=\"{{p.empCode}}\">{{p.firstName}}</option>\n                                         </select>\n                                    <span *ngIf=\"!resManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select resource manager\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !onsManager.valid }\">\n                                    <label>Onsite Manager</label>\n                                    <!--<select class=\"form-control\" name=\"onsiteManager\" required ngModel>\n                                            <option *ngFor=\"let p of onsitemanagerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                    </select>-->\n                                    <select class=\"form-control\" name=\"onsiteManager\" required ngModel #onsManager=\"ngModel\">\n                                     <option *ngFor=\"let p of obj\" value=\"{{p}}\">{{p}}</option>\n                                    </select>\n                                    <span *ngIf=\"!onsManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select onsite manager\n                                   </span>\n                                </div>\n                            </div>\n                        </div>\n                        <br>\n                        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li class=\"active\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-sm-6\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Add New User Here </div>\n                <div class=\"panel-body\">\n                    <form name=\"myform\" #userForm=\"ngForm\" (ngSubmit)=\"userForm.valid &&  onSubmit(userForm.value,userForm)\" novalidate>\n                        <div class=\"row\">\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !fnameRef.valid }\">\n                                    <label>First Name</label>\n                                    <input type=\"text\" #fnameRef=\"ngModel\" required class=\"form-control\" name=\"firstName\" ngModel>\n                                    <span *ngIf=\"!fnameRef.valid  && userForm.submitted\" class=\"help-block\">\n                                    First Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\">\n                                    <label>Middle Name</label>\n                                    <input type=\"text\" #middleRef=\"ngModel\" class=\"form-control\" name=\"middleName\" ngModel>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-4\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !lnameRef.valid }\">\n                                    <label>Last Name</label>\n                                    <input type=\"text\" #lnameRef=\"ngModel\" required class=\"form-control\" name=\"lastName\" ngModel>\n                                    <span *ngIf=\" !lnameRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Last Name is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !emailRef.valid }\">\n                                    <label>Email</label>\n                                    <input type=\"text\" #emailRef=\"ngModel\" pattern=\"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$\" required class=\"form-control\"\n                                        name=\"email\" ngModel>\n                                    <div *ngIf=\"emailRef.errors &&(emailRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!emailRef.errors.required\">\n                                            please enter your email address\n                                        </div>\n                                        <div [hidden]=\"!emailRef.errors.pattern\">\n                                            please enter valid email with '@' and '.'\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\" !emailRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Email is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !empRef.valid }\">\n                                    <label>Emp Code</label>\n                                    <input type=\"text\" #empRef=\"ngModel\" pattern=\"^[0-9]{4}$\" required class=\"form-control\" name=\"empCode\" ngModel>\n                                    <div *ngIf=\"empRef.errors &&(empRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!empRef.errors.required\">\n                                            please enter your emp code\n                                        </div>\n                                        <div [hidden]=\"!empRef.errors.pattern\">\n                                            please enter empcode with starting number between 0 to 9 and max 4\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!empRef.valid && userForm.submitted\" class=\"help-block\">\n                                    Emp Code is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !phoneRef.valid }\">\n                                    <label>Phone</label>\n                                    <input #phoneRef=\"ngModel\" type=\"text\" pattern=\"^[0-9]{10}$\" required class=\"form-control\" name=\"phone\" ngModel>\n                                    <div *ngIf=\"phoneRef.errors &&(phoneRef.dirty)\" class=\"alert alert-danger\">\n                                        <div [hidden]=\"!phoneRef.errors.required\">\n                                            please enter your phone number\n                                        </div>\n                                        <div [hidden]=\"!phoneRef.errors.pattern\">\n                                            please enter 10 digit phone number\n                                        </div>\n                                    </div>\n                                    <span *ngIf=\"!phoneRef.valid && userForm.submitted\" class=\"help-block\">\n                                Phone number is required\n                                   </span>\n                                </div>\n                            </div>\n                            <div class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dirRef.valid }\">\n                                    <label>Director</label>\n                                    <input type=\"text\" #dirRef=\"ngModel\" class=\"form-control\" name=\"director\" required ngModel>\n                                    <span *ngIf=\"!dirRef.valid && userForm.submitted\" class=\"help-block\">\n                                Director name is required\n                                   </span>\n                                </div>\n\n                            </div>\n                            <div class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !userRole.valid }\">\n                                    <label>User Role</label>\n                                    <select ngModel name=\"userRole\" class=\"form-control\" required #userRole=\"ngModel\">\n                                        <option value=\"\" disabled>--select--</option>\n                                <option value=\"2\">HRA</option>\n                                <option value=\"1\">Manager</option>\n                                <option value=\"0\">Employee</option>\n                                   </select>\n                                    <span *ngIf=\"!userRole.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select user role\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=\"col-sm-6\">\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !dept.valid }\">\n                                    <label>Department</label>\n                                    <!--<input class=\"form-control\" name=\"dept\" required ngModel [(ngModel)]=\"selectedPerson.dept\" readonly>-->\n                                    <select name=\"dept\" ngModel class=\"form-control\" required #dept=\"ngModel\" (change)=\"onChanged($event.target.value)\">\n                                        <option value=\"\" disabled>--select--</option>\n                                            <option value=\"QA\">QA</option>\n                                            <option value=\"Dev\">DEV</option>\n                                            <option value=\"IT\">IT/INFRA</option>\n                                            <option value=\"HRA/Admin\">HRA/Admin</option>\n                                            <option value=\"Director\">Director</option>\n                                         </select>\n                                    <span *ngIf=\"!dept.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select department\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !resManager.valid }\">\n                                    <label>Resource Manager</label>\n                                    <!-- <select name=\"resourceManager\" ngModel class=\"form-control\" required (change)=\"onChanged($event.target.value)\">\n                                            <option *ngFor=\"let p of managerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                         </select>-->\n                                    <select name=\"resourceManager\" ngModel class=\"form-control\" required #resManager=\"ngModel\">\n                                           <option value=\"\" disabled>--select--</option>\n                                           <option *ngFor=\"let p of managerslist\" value=\"{{p.empCode}}\">{{p.firstName}}</option>\n                                         </select>\n                                    <span *ngIf=\"!resManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select resource manager\n                                   </span>\n                                </div>\n                            </div>\n                            <div *ngIf=\"showId\" class=col-sm-6>\n                                <div class=\"form-group\" [ngClass]=\"{ 'has-error': userForm.submitted && !onsManager.valid }\">\n                                    <label>Onsite Manager</label>\n                                    <!--<select class=\"form-control\" name=\"onsiteManager\" required ngModel>\n                                            <option *ngFor=\"let p of onsitemanagerslist\" value={{p.empCode}}>{{p.firstName}}</option>\n                                    </select>-->\n                                    <select class=\"form-control\" name=\"onsiteManager\" required ngModel #onsManager=\"ngModel\">\n                                     <option value=\"\" disabled>--select--</option>\n                                     <option *ngFor=\"let p of obj\" value=\"{{p}}\">{{p}}</option>\n                                    </select>\n                                    <span *ngIf=\"!onsManager.valid && userForm.submitted\" class=\"help-block\">\n                                     Please select onsite manager\n                                   </span>\n                                </div>\n                            </div>\n                        </div>\n                        <br>\n                        <button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 196:
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li class=\"active\"><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Welcome to Leave Tracking Application of Copart</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped\">\n                    <thead>\n                        <tr>\n                            <th>Resource Manager</th>\n                            <th>Onsite Manager</th>\n                            <th>CL's</th>\n                            <th>SL's</th>\n                            <th>PL's</th>\n                            <th>Director</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td>{{employees.resourceManagerName}}</td>\n                            <td>{{employees.onsiteManager}}</td>\n                            <td>{{totleavesOfCL}}</td>\n                            <td>{{totleavesOfSL}}</td>\n                            <td>{{totleavesOfPL}}</td>\n                            <td>{{employees.director}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Leave history</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped \">\n                    <thead>\n                        <tr>\n                            <th>Leave Type</th>\n                            <th>Fromdate</th>\n                            <th>Todate</th>\n                            <th>No of days</th>\n                            <th>Reason</th>\n                            <th>Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let item of leaveHistory\">\n                            <td>{{item.leaveType}}</td>\n                            <td>{{item.fromDate}}</td>\n                            <td>{{item.toDate}}</td>\n                            <td>{{item.leavesApplied}}</td>\n                            <td style=\"table-layout:fixed;width:25%;\">{{item.reason}}</td>\n                            <td>{{item.status}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave application form </div>\n    <div class=\"panel-body\">\n        <form #leaveform=\"ngForm\" (ngSubmit)=\"OnSubmit(leaveform.value, leaveform)\" novalidate>\n            <div class=\"row\">\n                <div class=\"col-sm-6\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>From Date: </label>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"fromDate\"  required [(ngModel)]=\"leave.fromdate\" (dateChanged)=\"onChange($event, 'F')\"></my-date-picker>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>To Date: </label> <span style=\"color:red; font-size:14px;\">{{todate_errorMsg}}</span>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"toDate\" required [(ngModel)]=\"leave.todate\" (dateChanged)=\"onChange($event, 'T')\"></my-date-picker>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>Leave type: </label>\n                                <select ngModel name=\"leaveType\" class=\"form-control\" required [(ngModel)]=\"leave.leavetype\" (change)=\"onChange($event,'')\"> \n                                    <option disabled>Select Leave type</option>\n                                    <option value=\"CL\">Casual leave</option>\n                                    <option value=\"SL\">Sick Leave</option>\n                                    <option value=\"PL\">Privilege Leave</option>\n                                  </select>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>No of days</label><span style=\"color:red; font-size:14px;\">{{leaves_errorMsg}}</span>\n                                <input ngModel name=\"leavesApplied\" class=\"form-control\" required [(ngModel)]=\"leaves\" readonly>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-sm-6\">\n                    <label>Reason for Leave</label>\n                    <textarea class=\"form-control\" rows=\"4\" cols=\"10\" style=\"width:100%;\" ngModel name=\"reason\" required></textarea>\n                </div>\n            </div>\n            <br>\n            <button [disabled]=\"!leaveform.form.valid || valid\" type=\"submit\" class=\"btn btn-primary pull-right\">Submit</button>\n        </form>\n    </div>\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\n    <li *ngIf=\"isAdmin\"><a routerLink=\"/admin\" routerLinkActive=\"active\">Dashboard</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Add User</a></li>\n    <li class=\"active\"><a routerLink=\"/leave\" routerLinkActive=\"active\">Apply Leave</a></li>\n    <li *ngIf=\"isAdmin && isManager\"><a routerLink=\"/edit\" routerLinkActive=\"active\">Edit User</a></li>\n</ul>\n<br>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Welcome to Leave Tracking Application of Copart</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped\">\n                    <thead>\n                        <tr>\n                            <th>Resource Manager</th>\n                            <th>Onsite Manager</th>\n                            <th>CL's</th>\n                            <th>SL's</th>\n                            <th>PL's</th>\n                            <th>Director</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td>{{employees.resourceManagerName}}</td>\n                            <td>{{employees.onsiteManager}}</td>\n                            <td>{{totleavesOfCL}}</td>\n                            <td>{{totleavesOfSL}}</td>\n                            <td>{{totleavesOfPL}}</td>\n                            <td>{{employees.director}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n    <div class=\"col-md-6\">\n        <div class=\"panel panel-primary\">\n            <div class=\"panel-heading\">Leave history</div>\n            <div class=\"panel-body table-responsive mytable\">\n                <table class=\"table table-striped \">\n                    <thead>\n                        <tr>\n                            <th>Leave Type</th>\n                            <th>Fromdate</th>\n                            <th>Todate</th>\n                            <th>No of days</th>\n                            <th>Reason</th>\n                            <th>Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let item of leaveHistory\">\n                            <td>{{item.leaveType}}</td>\n                            <td>{{item.fromDate}}</td>\n                            <td>{{item.toDate}}</td>\n                            <td>{{item.leavesApplied}}</td>\n                            <td style=\"table-layout:fixed;width:25%;\">{{item.reason}}</td>\n                            <td>{{item.status}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>\n<div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Leave application form </div>\n    <div class=\"panel-body\">\n        <form #leaveform=\"ngForm\" (ngSubmit)=\"OnSubmit(leaveform.value, leaveform)\" novalidate>\n            <div class=\"row\">\n                <div class=\"col-sm-6\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>From Date: </label>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"fromDate\" required [(ngModel)]=\"leave.fromdate\" (dateChanged)=\"onChange($event, 'F')\"></my-date-picker>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>To Date: </label> <span style=\"color:red; font-size:14px;\">{{todate_errorMsg}}</span>\n                                <my-date-picker [options]=\"myDatePickerOptions\" ngModel name=\"toDate\" required [(ngModel)]=\"leave.todate\" (dateChanged)=\"onChange($event, 'T')\"></my-date-picker>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>Leave type: </label>\n                                <select ngModel name=\"leaveType\" class=\"form-control\" required [(ngModel)]=\"leave.leavetype\" (change)=\"onChange($event,'')\"> \n                                    <option value=\"\" disabled >--select--</option>\n                                    <option value=\"CL\">Casual leave</option>\n                                    <option value=\"SL\">Sick Leave</option>\n                                    <option value=\"PL\">Privilege Leave</option>\n                                  </select>\n                            </div>\n                        </div>\n                        <div class=\"col-sm-6\">\n                            <div>\n                                <label>No of days</label><span style=\"color:red; font-size:14px;\">{{leaves_errorMsg}}</span>\n                                <input ngModel name=\"leavesApplied\" class=\"form-control\" required [(ngModel)]=\"leaves\" readonly>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-sm-6\">\n                    <label>Reason for Leave</label>\n                    <textarea class=\"form-control\" rows=\"4\" cols=\"10\" style=\"width:100%;\" ngModel name=\"reason\" required></textarea>\n                </div>\n            </div>\n            <br>\n            <button [disabled]=\"!leaveform.form.valid || valid\" type=\"submit\" class=\"btn btn-primary pull-right\">Submit</button>\n        </form>\n    </div>\n</div>"
 
 /***/ }),
 
 /***/ 197:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6\">\r\n            <div class=\"panel panel-primary\">\r\n                <div class=\"panel-heading\">Reset Password Here</div>\r\n                <div class=\"panel-body table-responsive \">\r\n                    <form name=\"set_password_form\" #set_password_form=\"ngForm\" (ngSubmit)=\"onSubmit(set_password_form.value,set_password_form)\" novalidate>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter Old Password</label>\r\n                            <input required name=\"oldpassword\" type=\"text\" class=\"form-control\" [(ngModel)]=\"oldpassword\">\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter New Password</label>\r\n                            <input required name=\"password\" type=\"text\" class=\"form-control\" [(ngModel)]=\"password\">\r\n                            <label>Confirm New Password</label>\r\n                            <input required name=\"repeatPassword\" type=\"password\" class=\"form-control\" [(ngModel)]=\"repeatPassword\">\r\n                            <div [hidden]=\"password == repeatPassword\">Passwords do not match!</div>\r\n                        </div>\r\n                        <button [disabled]=\"!set_password_form.form.valid\" type=\"submit\" class=\"btn btn-primary\">Submit</button>\r\n                        <button type=\"reset\" class=\"btn btn-primary\">Reset</button>\r\n                    </form>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
+module.exports = "<div class=\"container\">\r\n    <div class=\"row\">\r\n        <div class=\"col-sm-6\">\r\n            <div class=\"panel panel-primary\">\r\n                <div class=\"panel-heading\">Reset Password Here</div>\r\n                <div class=\"panel-body table-responsive \">\r\n                    <form name=\"set_password_form\" #set_password_form=\"ngForm\" (ngSubmit)=\"onSubmit(set_password_form.value,set_password_form)\"\r\n                        novalidate>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter Old Password</label>\r\n                            <password-input required name=\"oldpassword\" ngModel placeholder=\"Enter your old password here ...\" behaviour=\"click\" [(ngModel)]=\"oldpassword\"></password-input>\r\n                            <!--<input required name=\"oldpassword\" type=\"text\" class=\"form-control\" [(ngModel)]=\"oldpassword\">-->\r\n                        </div>\r\n                        <div class=\"form-group\">\r\n                            <label>Enter New Password</label>\r\n                            <password-input required name=\"password\" ngModel placeholder=\"Enter your new password here ...\" behaviour=\"click\" [(ngModel)]=\"password\"></password-input>\r\n                            <!-- <input required name=\"password\" type=\"password\" class=\"form-control\" [(ngModel)]=\"password\">-->\r\n                            <label>Confirm New Password</label>\r\n                            <password-input required name=\"repeatPassword\" ngModel placeholder=\"Confirm your new password here ...\" behaviour=\"click\"\r\n                                [(ngModel)]=\"repeatPassword\"></password-input>\r\n                            <!-- <input required name=\"repeatPassword\" type=\"password\" class=\"form-control\" [(ngModel)]=\"repeatPassword\">-->\r\n                            <div style=\"color:red; font-size:14px;\" [hidden]=\"password == repeatPassword\"> New password does not match the confirm password</div>\r\n                        </div>\r\n                        <button [disabled]=\"!set_password_form.form.valid\" type=\"submit\" class=\"btn btn-primary\">Submit</button>\r\n                        <button type=\"reset\" class=\"btn btn-primary\">Reset</button>\r\n                    </form>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
 /***/ 198:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-6 col-md-offset-2\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome To Login Portal of Copart</div>\n                <div class=\" panel-body\">\n                    <form #lgForm=\"ngForm\" (ngSubmit)=\"loginSubmit(lgForm.value)\">\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-user\"></i></span>\n                            <input type=\"text\" name=\"email\" ngModel class=\"form-control\" placeholder=\"Email\" required />\n                        </div>\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n                           <input type=\"password\" name=\"password\" ngModel class=\"form-control\" placeholder=\"Password\" required  />\n                        </div>\n                        <button type=\"submit\" class=\"btn btn-primary\" name=\"action\">Login</button>\n                        <span>{{errorMsg}}</span>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n\n\n\n"
+module.exports = "<div class=\"container\">\n    <div class=\"row\">\n        <div class=\"col-md-6 col-md-offset-2\">\n            <div class=\"panel panel-primary\">\n                <div class=\"panel-heading\">Welcome To Login Portal of Copart</div>\n                <div class=\" panel-body\">\n                    <form #lgForm=\"ngForm\" (ngSubmit)=\"loginSubmit(lgForm.value)\">\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-user\"></i></span>\n                            <input type=\"text\" name=\"email\" ngModel class=\"form-control\" placeholder=\"Email\" required />\n                        </div>\n                        <div class=\"input-group form-group\">\n                            <span class=\"input-group-addon\"><i class=\"glyphicon glyphicon-lock\"></i></span>\n                           <input type=\"password\" name=\"password\" ngModel class=\"form-control\" placeholder=\"Password\" required  />\n                        </div>\n                        <button type=\"submit\" class=\"btn btn-primary\" name=\"action\">Login</button>\n                        <span>{{errorMsg}}</span>\n                     </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n\n\n\n\n\n\n"
 
 /***/ }),
 
@@ -1283,8 +1547,112 @@ module.exports = "<div class=\"nav-bar text\">\n    <nav class=\"navbar navbar-i
 /***/ 230:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(100);
+module.exports = __webpack_require__(101);
 
+
+/***/ }),
+
+/***/ 233:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__(38);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PasswordInputComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var noop = function () {
+};
+var PasswordInputComponent = PasswordInputComponent_1 = (function () {
+    function PasswordInputComponent() {
+        this._onChange = noop;
+        this.behaviour = 'press';
+    }
+    Object.defineProperty(PasswordInputComponent.prototype, "value", {
+        get: function () {
+            return this._value;
+        },
+        set: function (v) {
+            if (v !== this._value) {
+                this._value = v;
+                this._onChange(v);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    PasswordInputComponent.prototype.ngAfterViewInit = function () {
+        var __this = this;
+        var textbox = __this.el.nativeElement;
+        var toggler = __this.toggler.nativeElement;
+        var togglerIcon = toggler.childNodes[0];
+        // if (__this.behaviour === 'press') {
+        //     toggler.addEventListener('mousedown', (e) => {
+        //         textbox.type = 'text';
+        //         togglerIcon.classList.remove('fa-eye');
+        //         togglerIcon.classList.add('fa-eye-slash');
+        //     });
+        //     toggler.addEventListener('mouseup', (e) => {
+        //         textbox.type = 'password';
+        //         togglerIcon.classList.remove('fa-eye-slash');
+        //         togglerIcon.classList.add('fa-eye');
+        //     });
+        // }
+        if (__this.behaviour === 'click') {
+            toggler.addEventListener('click', function (e) {
+                textbox.type = textbox.type === 'password' ? 'text' : 'password';
+                togglerIcon.classList.toggle('fa-eye');
+                togglerIcon.classList.toggle('fa-eye-slash');
+            });
+        }
+    };
+    PasswordInputComponent.prototype.writeValue = function (value) {
+        this._value = value;
+    };
+    PasswordInputComponent.prototype.registerOnChange = function (fn) {
+        this._onChange = fn;
+    };
+    PasswordInputComponent.prototype.registerOnTouched = function (fn) { };
+    return PasswordInputComponent;
+}());
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('input'),
+    __metadata("design:type", typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"]) === "function" && _a || Object)
+], PasswordInputComponent.prototype, "el", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('toggler'),
+    __metadata("design:type", typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"]) === "function" && _b || Object)
+], PasswordInputComponent.prototype, "toggler", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", String)
+], PasswordInputComponent.prototype, "placeholder", void 0);
+__decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+    __metadata("design:type", String)
+], PasswordInputComponent.prototype, "behaviour", void 0);
+PasswordInputComponent = PasswordInputComponent_1 = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: "password-input",
+        template: "\n    <div class=\"input-group mb-2 mr-sm-2 mb-sm-0\">\n        <input type=\"password\" class=\"form-control\" placeholder=\"{{placeholder}}\" #input [(ngModel)]=\"value\">\n        <div class=\"input-group-addon\" #toggler><i class=\"fa fa-eye\"></i></div>\n    </div>",
+        providers: [
+            { provide: __WEBPACK_IMPORTED_MODULE_1__angular_forms__["b" /* NG_VALUE_ACCESSOR */], multi: true, useExisting: PasswordInputComponent_1 }
+        ]
+    })
+], PasswordInputComponent);
+
+var PasswordInputComponent_1, _a, _b;
+//# sourceMappingURL=app.password-input.js.map
 
 /***/ }),
 
@@ -1294,12 +1662,66 @@ module.exports = __webpack_require__(100);
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Login_app_login_component__ = __webpack_require__(112);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Home_app_leave_component__ = __webpack_require__(110);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Admin_app_signup_component__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Admin_app_edituser_component__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Admin_app_admin_component__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Home_app_setpassword__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return holidayService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var holidayService = (function () {
+    function holidayService(_router, _http) {
+        this._router = _router;
+        this._http = _http;
+        this._url = '/copartLTA/rest/api/v1/lta/holidays';
+        this.editHolidayList_url = '/copartLTA/rest/api/v1/lta/editHolidayList';
+    }
+    holidayService.prototype.getHolidays = function () {
+        return this._http.get(this._url)
+            .map(function (response) { return response.json().body; });
+    };
+    holidayService.prototype.saveHolidayList = function (data) {
+        console.log('Finished');
+        var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Headers */]({ 'Content-Type': 'application/json' });
+        var options = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["c" /* RequestOptions */]({ headers: headers });
+        var body = JSON.stringify(data);
+        return this._http.post(this.editHolidayList_url, data, headers)
+            .map(function (res) { return res.json(); });
+    };
+    return holidayService;
+}());
+holidayService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_router__["a" /* Router */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["d" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["d" /* Http */]) === "function" && _b || Object])
+], holidayService);
+
+var _a, _b;
+//# sourceMappingURL=app.holidayservice.js.map
+
+/***/ }),
+
+/***/ 69:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Login_app_login_component__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Home_app_leave_component__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Admin_app_signup_component__ = __webpack_require__(110);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Admin_app_edituser_component__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Admin_app_admin_component__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Home_app_setpassword__ = __webpack_require__(112);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoutingComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return routingModuleComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1338,20 +1760,6 @@ RoutingComponent = __decorate([
 
 var routingModuleComponent = [__WEBPACK_IMPORTED_MODULE_2__Login_app_login_component__["a" /* LoginComponent */], __WEBPACK_IMPORTED_MODULE_3__Home_app_leave_component__["a" /* LeaveComponent */], __WEBPACK_IMPORTED_MODULE_6__Admin_app_admin_component__["a" /* AdminComponent */], __WEBPACK_IMPORTED_MODULE_5__Admin_app_edituser_component__["a" /* EdituserComponent */], __WEBPACK_IMPORTED_MODULE_4__Admin_app_signup_component__["a" /* SignupComponent */], __WEBPACK_IMPORTED_MODULE_7__Home_app_setpassword__["a" /* SetPasswordComponent */]];
 //# sourceMappingURL=app.routing.js.map
-
-/***/ }),
-
-/***/ 99:
-/***/ (function(module, exports) {
-
-function webpackEmptyContext(req) {
-	throw new Error("Cannot find module '" + req + "'.");
-}
-webpackEmptyContext.keys = function() { return []; };
-webpackEmptyContext.resolve = webpackEmptyContext;
-module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 99;
-
 
 /***/ })
 

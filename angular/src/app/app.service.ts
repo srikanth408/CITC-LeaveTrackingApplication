@@ -18,6 +18,12 @@ export class EmployeedataService {
   private _ManagersListUrl: string = '/copartLTA/rest/api/v1/lta/managers';
   private _OnsiteManagersListUrl: string = '/copartLTA/rest/api/v1/lta/onsitemanagers';
   private _ResetPasswordUrl: string = '/copartLTA/rest/api/v1/lta/resetPassword';
+  private _deleteOnsiteManagerUrl: string = '/copartLTA/rest/api/v1/lta/deleteOnsiteManager';
+  private _saveOnsiteManagerUrl: string = '/copartLTA/rest/api/v1/lta/editOnsiteManager';
+  private _addOnsiteManagerUrl: string = '/copartLTA/rest/api/v1/lta/addOnsiteManager';
+  private _deleteManagerUrl: string = '/copartLTA/rest/api/v1/lta/deleteManager';
+  private _saveManagerUrl: string = '/copartLTA/rest/api/v1/lta/editManager';
+  private _addManagerUrl: string = '/copartLTA/rest/api/v1/lta/addManager';
   constructor(
     private _router: Router, private _http: Http) { }
 
@@ -99,6 +105,57 @@ export class EmployeedataService {
     return this._http.get(this._OnsiteManagersListUrl)
       .map((response: Response) => response.json().body);
 
+  }
+  saveOnsiteManagerDetails(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._saveOnsiteManagerUrl, data, headers)
+      .map((res: Response) => res.json());
+  }
+  deleteOnsiteManagerDetails(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._deleteOnsiteManagerUrl, data, headers)
+      .map((res: Response) => res.json());
+  }
+
+  addOnsiteManager(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._addOnsiteManagerUrl, data, headers)
+      .map((res: Response) => res.json());
+  }
+ 
+saveManagerDetails(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._saveManagerUrl, data, headers)
+      .map((res: Response) => res.json());
+  }
+  deleteManagerDetails(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._deleteManagerUrl, data, headers)
+      .map((res: Response) => res.json());
+  }
+
+  addManager(data: any) {
+    console.log('Finished');
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    let body = JSON.stringify(data);
+    return this._http.post(this._addManagerUrl, data, headers)
+      .map((res: Response) => res.json());
   }
 
 }

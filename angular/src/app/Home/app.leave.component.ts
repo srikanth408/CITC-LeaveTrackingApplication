@@ -53,7 +53,7 @@ export class LeaveComponent {
         this.employees = this.empDataSr.getEmpInfo();
         this.getholidaysList();
         this.getleavesHistory();
-
+        this.leave.leavetype = '';
     }
 
 
@@ -193,9 +193,9 @@ export class LeaveComponent {
             var count = 0;
 
             for (let i = 0; i < this.holidays.length; i++) {
-                var holiday = new Date(this.holidays[i]);
+                var holiday = new Date(this.holidays[i].holidayDate);
 
-                if ((this.holidays[i] <= date2 && this.holidays[i] >= date1) && (holiday.getDay() !== 0 && holiday.getDay() !== 6)) {
+                if ((this.holidays[i].holidayDate <= date2 && this.holidays[i].holidayDate >= date1) && (holiday.getDay() !== 0 && holiday.getDay() !== 6)) {
                     count++;
 
                 }

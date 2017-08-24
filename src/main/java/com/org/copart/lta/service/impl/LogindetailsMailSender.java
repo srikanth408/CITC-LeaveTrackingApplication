@@ -29,7 +29,7 @@ public class LogindetailsMailSender implements MailSender {
 			prop.setProperty("mail.smtp.host", server.getHost());
 			prop.setProperty("mail.smtp.port", server.getPort());
 			prop.setProperty("mail.smtp.auth", "false");
-			prop.setProperty("mail.smtp.starttls.enable", "true");
+			prop.setProperty("mail.smtp.starttls.enable", "false");
 			Session mailSession = Session.getDefaultInstance(prop);
 			/*Session mailSession = Session.getInstance(prop, new Authenticator(){
 				@Override
@@ -68,10 +68,10 @@ public class LogindetailsMailSender implements MailSender {
 				msg.setSubject("Login Credentials of "+ user.getFirstName() +" " + user.getMiddleName() +" " + user.getLastName());
 				//msg.setText("Leave Approval requested from date " + leave.getFromDate() + " to date " + leave.getToDate() + " reason : " + leave.getReason());
 				StringBuilder email = new StringBuilder();
-				email.append("<html><body><table style='border:2px solid black'>");
-				email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Login Id </td>").append("<td>").append(user.getEmail()).append("</td></tr>");
-				email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Password </td>").append("<td>").append(user.getPassword()).append("</td></tr>");
-				email.append("</table><p>Please login into LTA Application and on first login please change your password. Thank you..!</p></body></html>");
+				email.append("<html><body><p>Hello "+ user.getFirstName()+" "+ user.getLastName() +", </p><p>Your leave tracking application login credentials are </p><table style='border:2px solid black'>");
+				email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Login Id :</td>").append("<td>").append(user.getEmail()).append("</td></tr>");
+				email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Password :</td>").append("<td>").append(user.getPassword()).append("</td></tr>");
+				email.append("</table><p>Please login into leave tracking application<span> https://citc-lta.copart.com </span> and on first login please change your password. Thank you..!</p></body></html>");
 				
 				msg.setContent(email.toString(), "text/html");
 			} catch (MessagingException e) {

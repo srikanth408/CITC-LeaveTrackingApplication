@@ -20,7 +20,56 @@ public class UserBean {
 	private int userRole;
 	private String repeatPassword;
 	private String resourceManagerName;
+	private String resourceManagerEmpCode;
+	private String resourceManagerDept;
 	private String onsiteManagerName;
+	private String onsiteManagerEmail;
+	private String onsiteManagerDept;
+	private String reqId;
+	private String holidayDate;
+	
+	
+	public String getResourceManagerEmpCode() {
+		return resourceManagerEmpCode;
+	}
+
+	public void setResourceManagerEmpCode(String resourceManagerEmpCode) {
+		this.resourceManagerEmpCode = resourceManagerEmpCode;
+	}
+
+	public String getResourceManagerDept() {
+		return resourceManagerDept;
+	}
+
+	public void setResourceManagerDept(String resourceManagerDept) {
+		this.resourceManagerDept = resourceManagerDept;
+	}
+
+	
+
+	public String getHolidayDate() {
+		return holidayDate;
+	}
+
+	public void setHolidayDate(String holidayDate) {
+		this.holidayDate = holidayDate;
+	}
+
+	public String getOnsiteManagerEmail() {
+		return onsiteManagerEmail;
+	}
+
+	public void setOnsiteManagerEmail(String onsiteManagerEmail) {
+		this.onsiteManagerEmail = onsiteManagerEmail;
+	}
+
+	public String getOnsiteManagerDept() {
+		return onsiteManagerDept;
+	}
+
+	public void setOnsiteManagerDept(String onsiteManagerDept) {
+		this.onsiteManagerDept = onsiteManagerDept;
+	}
 
 	public String getResourceManagerName() {
 		return resourceManagerName;
@@ -28,6 +77,14 @@ public class UserBean {
 
 	public void setResourceManagerName(String resourceManagerName) {
 		this.resourceManagerName = resourceManagerName;
+	}
+
+	public String getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(String reqId) {
+		this.reqId = reqId;
 	}
 
 	public String getOnsiteManagerName() {

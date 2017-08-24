@@ -31,7 +31,7 @@ public class ApproveLeaveMailSender implements MailSender {
 		prop.setProperty("mail.smtp.host", server.getHost());
 		prop.setProperty("mail.smtp.port", server.getPort());
 		prop.setProperty("mail.smtp.auth", "false");
-		prop.setProperty("mail.smtp.starttls.enable", "true");
+		prop.setProperty("mail.smtp.starttls.enable", "false");
 		Session mailSession = Session.getDefaultInstance(prop);
 		/*Session mailSession = Session.getInstance(prop, new Authenticator(){
 			@Override
@@ -67,15 +67,15 @@ public class ApproveLeaveMailSender implements MailSender {
 			msg.setSubject("Leave request "+ leave.getStatus()+ " by "+" "+ user.getFirstName() + " " + user.getLastName());
 			//msg.setText("Leave Approval requested from date " + leave.getFromDate() + " to date " + leave.getToDate() + " reason : " + leave.getReason());
 			StringBuilder email = new StringBuilder();
-			email.append("<html><body> <table style='border:2px solid black'>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Employee Id </td>").append("<td>").append(leave.getemployeeId()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> From Date </td>").append("<td>").append(leave.getFromDate()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> To date </td>").append("<td>").append(leave.getToDate()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> No of Days </td>").append("<td>").append(leave.getLeavesApplied()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Reason </td>").append("<td>").append(leave.getReason()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Leave Type </td>").append("<td>").append(leave.getLeaveType()).append("</td></tr>");
-			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Status </td>").append("<td>").append(leave.getStatus()).append("</td></tr>");
-			email.append("</table></body></html>");
+			email.append("<html><body><p>Hello,</p><p>Your leave request has been "+ leave.getStatus()+"</p> <table style='border:2px solid black'>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Employee Id :</td>").append("<td>").append(leave.getemployeeId()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> From Date :</td>").append("<td>").append(leave.getFromDate()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> To date :</td>").append("<td>").append(leave.getToDate()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> No of Days :</td>").append("<td>").append(leave.getLeavesApplied()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Reason :</td>").append("<td>").append(leave.getReason()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Leave Type :</td>").append("<td>").append(leave.getLeaveType()).append("</td></tr>");
+			email.append("<tr bgcolor=\"#FFFFFF\">").append("<td> Status :</td>").append("<td>").append(leave.getStatus()).append("</td></tr>");
+			email.append("</table><p>Please login into leave tracking application<span> https://citc-lta.copart.com </span></p></body></html>");
 			
 			msg.setContent(email.toString(), "text/html");
 		} catch (MessagingException e) {

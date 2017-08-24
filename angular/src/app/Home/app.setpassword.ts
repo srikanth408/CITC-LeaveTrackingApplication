@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component,NgModule } from '@angular/core';
 import { EmployeedataService } from '../app.service';
 import { EmpDataService } from '../app.model';
 import { ToasterContainerComponent, ToasterService, Toast, ToasterConfig } from 'angular2-toaster';
+import { PasswordInputComponent} from './app.password-input';
 
 
 
@@ -19,6 +20,9 @@ export class SetPasswordComponent {
     public oldpassword:any;
     public password:any;
     public repeatPassword:any;
+    show:boolean=false;
+    type:any;
+    input:any;
 
 
 
@@ -60,6 +64,19 @@ export class SetPasswordComponent {
         };
 
         this.toasterService.pop(toast);
+    }
+    toggleShow(){
+        this.show = !this.show;
+        if (this.show){
+            this.input.changeType("text");
+        }
+        else {
+            this.input.changeType("password");
+        }
+
+    }
+       changeType(type:string): void {
+        this.type = type;
     }
 
 }

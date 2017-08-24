@@ -21,6 +21,13 @@ public class LTAServiceImpl {
 	public int addUser(UserBean user) throws SQLException {
 		return new LTADaoImpl().addUser(user);
 	}
+	public int addOnsiteManager(UserBean user) throws SQLException {
+		return new LTADaoImpl().addOnsiteManager(user);
+	}
+	public int addManager(UserBean user) throws SQLException {
+		return new LTADaoImpl().addManager(user);
+	}
+	
 
 	public int applyLeave(LeaveBean lb) {
 		return new LTADaoImpl().applyLeave(lb);
@@ -35,6 +42,18 @@ public class LTAServiceImpl {
 	}
 	public int deleteUser(UserBean user) {
 		return new LTADaoImpl().deleteUser(user);
+	}
+	public int editOnsiteManager(UserBean user) {
+		return new LTADaoImpl().editOnsiteManager(user);
+	}
+	public int editManager(UserBean user) {
+		return new LTADaoImpl().editManager(user);
+	}
+	public int deleteOnsiteManager(UserBean user) {
+		return new LTADaoImpl().deleteOnsiteManager(user);
+	}
+	public int deleteManager(UserBean user) {
+		return new LTADaoImpl().deleteManager(user);
 	}
 
 	public List<UserBean> getAllUsersUnderRM() {
@@ -51,7 +70,7 @@ public class LTAServiceImpl {
 	public void setApproveRejectStatus(int reqId, String status) throws LTAppException {
 		 new LTADaoImpl().setApproveRejectStatus(reqId, status);
 	}
-	public List<String> getholidaylist(){
+	public List<UserBean> getholidaylist(){
 		return new LTADaoImpl().getholidaylist();
 	}
 	public List<UserBean> getManagerslist(){
@@ -62,6 +81,9 @@ public class LTAServiceImpl {
 	}
 	public void resetPassword(String empCode,String password) {
 	   new LTADaoImpl().resetPassword(empCode,password);
+	}
+	public int editHolidayList(UserBean user) {
+		return new LTADaoImpl().editHolidayList(user);
 	}
 	
 }
