@@ -24,6 +24,7 @@ export class EmployeedataService {
   private _deleteManagerUrl: string = '/copartLTA/rest/api/v1/lta/deleteManager';
   private _saveManagerUrl: string = '/copartLTA/rest/api/v1/lta/editManager';
   private _addManagerUrl: string = '/copartLTA/rest/api/v1/lta/addManager';
+  private _getAllLeaveHistory :string ='/copartLTA/rest/api/v1/lta/listAllLeavesApplied'
   constructor(
     private _router: Router, private _http: Http) { }
 
@@ -149,13 +150,17 @@ saveManagerDetails(data: any) {
       .map((res: Response) => res.json());
   }
 
-  addManager(data: any) {
+  addManager(resourceManagerName,resourceManagerDept,resourceManagerEmpCode) {
     console.log('Finished');
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let body = JSON.stringify(data);
-    return this._http.post(this._addManagerUrl, data, headers)
+   
+    return this._http.post(this._addManagerUrl + "?resourceManagerName=" + resourceManagerName + "&resourceManagerDept=" + resourceManagerDept+ "&resourceManagerEmpCode=" + resourceManagerEmpCode, headers)
       .map((res: Response) => res.json());
+  }
+  getAllLeavesHistory(fromDate, toDate) {
+    return this._http.get(this._getAllLeaveHistory + "?fromDate=" + fromDate + "&toDate=" + toDate)
+      .map((response: Response) => response.json().body);
   }
 
 }

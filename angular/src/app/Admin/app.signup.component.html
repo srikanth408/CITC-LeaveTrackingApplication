@@ -3,8 +3,10 @@
     <li class="active"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
     <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
     <li><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li><a routerLink="/exportLeaves" routerLinkActive="active">List of Leaves</a></li>
 </ul>
 <br>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
@@ -40,7 +42,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" [ngClass]="{ 'has-error': userForm.submitted && !emailRef.valid }">
                                     <label>Email</label>
-                                    <input type="text" #emailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
+                                    <input placeholder="******@copart.com" type="text" #emailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
                                         name="email" ngModel>
                                     <div *ngIf="emailRef.errors &&(emailRef.dirty)" class="alert alert-danger">
                                         <div [hidden]="!emailRef.errors.required">
@@ -119,11 +121,7 @@
                                     <!--<input class="form-control" name="dept" required ngModel [(ngModel)]="selectedPerson.dept" readonly>-->
                                     <select name="dept" ngModel class="form-control" required #dept="ngModel" (change)="onChanged($event.target.value)">
                                         <option value="" disabled>--select--</option>
-                                            <option value="QA">QA</option>
-                                            <option value="Dev">DEV</option>
-                                            <option value="IT">IT/INFRA</option>
-                                            <option value="HRA/Admin">HRA/Admin</option>
-                                            <option value="Director">Director</option>
+                                             <option *ngFor="let p of managerslist" value="{{p.dept}}">{{p.dept}}</option>
                                          </select>
                                     <span *ngIf="!dept.valid && userForm.submitted" class="help-block">
                                      Please select department

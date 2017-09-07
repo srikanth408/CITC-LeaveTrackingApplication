@@ -3,17 +3,18 @@
     <li><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
     <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
     <li class="active"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li><a routerLink="/exportLeaves" routerLinkActive="active">List of Leaves</a></li>
 </ul>
 <br>
 <div>
     <div class="panel panel-primary">
-        <div class="panel-heading">Welcome to Employees List of Copart</div>
+        <div class="panel-heading">Welcome to Employees List of Copart <span class="pull-right"><export-to-excel [data]="employee"></export-to-excel></span></div>
         <div class="panel-body table-responsive mytable">
-            <table class="table table-striped" id="mytable">
+            <table class="table-layout table table-striped" id="mytable">
                 <thead>
                     <tr>
                         <th>Sno</th>
-                        <th style="table-layout:fixed;width:13%;"><input class="form-control" type="search" [(ngModel)]="userFilter.empCode" placeholder="Employee Code"></th>
+                        <th><input class="form-control" type="search" [(ngModel)]="userFilter.empCode" placeholder="Employee Code"></th>
                         <th>First Name</th>
                         <th>Middle Name</th>
                         <th>Last Name</th>
@@ -32,40 +33,59 @@
                         <td>{{i+1}}</td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.empCode}}</span>
-                            <input type="text" [(ngModel)]="employees.empCode" value={{employees.empCode}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.empCode" value={{employees.empCode}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.firstName}}</span>
-                            <input type="text" [(ngModel)]="employees.firstName" value={{employees.firstName}} *ngIf="editedIndex === i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.firstName" value={{employees.firstName}} *ngIf="editedIndex === i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.middleName}}</span>
-                            <input type="text" [(ngModel)]="employees.middleName" value={{employees.middleName}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.middleName" value={{employees.middleName}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.lastName}}</span>
-                            <input type="text" [(ngModel)]="employees.lastName" value={{employees.lastName}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.lastName" value={{employees.lastName}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.email}}</span>
-                            <input type="text" [(ngModel)]="employees.email" value={{employees.email}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.email" value={{employees.email}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.resourceManager}}</span>
-                            <input type="text" [(ngModel)]="employees.resourceManager" value={{employees.resourceManager}} *ngIf="editedIndex===i"></td>
+                            <select class="form-control" [(ngModel)]="employees.resourceManager" *ngIf="editedIndex===i">
+                                   <option value="" disabled>--select--</option>
+                                   <option *ngFor="let managers of managersList" value="{{managers.empCode}}">{{managers.firstName}}</option>
+                            </select>
+                        </td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.onsiteManager}}</span>
-                            <input type="text" [(ngModel)]="employees.onsiteManager" value={{employees.onsiteManager}} *ngIf="editedIndex===i"></td>
+                            <select class="form-control" [(ngModel)]="employees.onsiteManager" *ngIf="editedIndex===i">
+                                  <option value="" disabled>--select--</option>
+                                   <option *ngFor="let onsiteManagers of onsiteManagersList" value="{{onsiteManagers.firstName}}">{{onsiteManagers.firstName}}</option>
+                            </select>
+                        </td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.director}}</span>
-                            <input type="text" [(ngModel)]="employees.director" value={{employees.director}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.director" value={{employees.director}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.phone}}</span>
-                            <input type="text" [(ngModel)]="employees.phone" value={{employees.phone}} *ngIf="editedIndex===i"></td>
+                            <input class="form-control" type="text" [(ngModel)]="employees.phone" value={{employees.phone}} *ngIf="editedIndex===i"></td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.dept}}</span>
-                            <input type="text" [(ngModel)]="employees.dept" value={{employees.dept}} *ngIf="editedIndex===i"></td>
+                            <select class="form-control" [(ngModel)]="employees.dept" *ngIf="editedIndex===i">
+                                 <option value="" disabled>--select--</option>
+                                 <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option>
+                            </select>
+                        </td>
                         <td>
                             <span *ngIf="editedIndex !== i">{{employees.userRole}}</span>
-                            <input type="text" [(ngModel)]="employees.userRole" value={{employees.userRole}} *ngIf="editedIndex===i"></td>
+                            <select class="form-control" [(ngModel)]="employees.userRole" *ngIf="editedIndex===i">
+                                 <option value="" disabled>--select--</option>
+                                <option value="2">HRA</option>
+                                <option value="1">Manager</option>
+                                <option value="0">Employee</option>
+                            </select>
+                        </td>
                         <button *ngIf="Edit" (click)="edit(employees,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
-                        <button *ngIf="editedIndex === i && Save" (click)="save(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
-                        <button (click)="delete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
+                        <button style="margin-top:10px" *ngIf="editedIndex === i && Save" (click)="save(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                        <button style="margin-top:10px" *ngIf="editedIndex === i && Save" (click)="cancel(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button *ngIf="deleteIcon" (click)="delete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
                     </tr>
                 </tbody>
             </table>
@@ -74,7 +94,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Welcome to OnsiteManagers List of Copart <span><a data-toggle="modal" data-target="#addOnsiteManager" style="color:white"class="pull-right">Add New User</a></span></div>
+                <div class="panel-heading">Welcome to OnsiteManagers List of Copart <span><a data-toggle="modal" data-target="#addOnsiteManager" style="color:white"class="pull-right">Add New</a></span></div>
                 <div class="panel-body table-responsive mytable">
                     <table class="table table-striped" id="mytable">
                         <thead>
@@ -83,20 +103,28 @@
                                 <th>OnsiteManager Name</th>
                                 <th>OnsiteManager Email</th>
                                 <th>OnsiteManager Department</th>
+                                <th>Edit/Save/Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let onsitelist of onsiteManagersList ;let i = index;">
                                 <td>{{i+1}}</td>
                                 <td><span *ngIf="onsEditedIndex !== i">{{onsitelist.firstName}}</span>
-                                    <input type="text" [(ngModel)]="onsitelist.firstName" value={{onsitelist.firstName}} *ngIf="onsEditedIndex===i"></td>
+                                    <input class="form-control" type="text" [(ngModel)]="onsitelist.firstName" value={{onsitelist.firstName}} *ngIf="onsEditedIndex===i"></td>
                                 <td><span *ngIf="onsEditedIndex !== i">{{onsitelist.empCode}}</span>
-                                    <input type="text" [(ngModel)]="onsitelist.empCode" value={{onsitelist.empCode}} *ngIf="onsEditedIndex===i"></td>
+                                    <input class="form-control" type="text" [(ngModel)]="onsitelist.empCode" value={{onsitelist.empCode}} *ngIf="onsEditedIndex===i"></td>
                                 <td><span *ngIf="onsEditedIndex !== i">{{onsitelist.dept}}</span>
-                                    <input type="text" [(ngModel)]="onsitelist.dept" value={{onsitelist.dept}} *ngIf="onsEditedIndex===i"></td>
+                                    <select class="form-control" [(ngModel)]="onsitelist.dept" *ngIf="onsEditedIndex===i">
+                                      <option value="" disabled>--select--</option>
+                                       <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option> 
+                                    </select>
+                                </td>
                                 <button *ngIf="onsManagerEdit" (click)="onsiteManagerEdit(onsitelist,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
-                                <button *ngIf="onsEditedIndex === i && onsManagerSave" (click)="onsiteManagerSave(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
-                                <button (click)="onsiteManagerDelete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
+                                <button style="margin-top:10px" *ngIf="onsEditedIndex === i && onsManagerSave" (click)="onsiteManagerSave(i)" type="submit"
+                                    class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                                <button style="margin-top:10px" *ngIf="onsEditedIndex === i && onsManagerSave" (click)="onsiteManagerCancel(i)" type="submit"
+                                    class="btn btn-default btn"><i class="glyphicon glyphicon-remove"></i></button>
+                                <button *ngIf="onsManagerDelete" (click)="onsiteManagerDelete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
                             </tr>
                         </tbody>
                     </table>
@@ -112,15 +140,19 @@
                             <tr>
                                 <th>Sno</th>
                                 <th>Holiday Date</th>
+                                <th>Edit/Save</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let holidaylist of holidaysList ;let i = index;">
                                 <td>{{i+1}}</td>
                                 <td><span *ngIf="hDateEditedIndex !== i">{{holidaylist.holidayDate}}</span>
-                                <input type="text" [(ngModel)]="holidaylist.holidayDate" value={{holidaylist.holidayDate}} *ngIf="hDateEditedIndex===i"></td>
+                                    <my-date-picker [options]="myDatePickerOptions" [(ngModel)]="holidaylist.holidayDate" *ngIf="hDateEditedIndex===i"></my-date-picker>
+                                </td>
                                 <button *ngIf="hDateEdit" (click)="holidayDateEdit(holidaylist,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
-                                <button *ngIf="hDateEditedIndex === i && hDateSave" (click)="holidayDateSave(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                                <button style="margin-top:10px" *ngIf="hDateEditedIndex === i && hDateSave" (click)="holidayDateSave(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                                <button style="margin-top:10px" *ngIf="hDateEditedIndex === i && hDateSave" (click)="holidayDateCancel(i)" type="button"
+                                    class="btn btn-default btn"><i class="glyphicon glyphicon-remove"></i></button>
                             </tr>
                         </tbody>
                     </table>
@@ -128,10 +160,10 @@
             </div>
         </div>
     </div>
-     <div class="row">
+    <div class="row">
         <div class="col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading">Welcome to Managers List of Copart <span><a data-toggle="modal" data-target="#addManager" style="color:white"class="pull-right">Add New User</a></span></div>
+                <div class="panel-heading">Welcome to Managers List of Copart <span><a data-toggle="modal" data-target="#addManager" style="color:white"class="pull-right">Add New</a></span></div>
                 <div class="panel-body table-responsive mytable">
                     <table class="table table-striped" id="mytable">
                         <thead>
@@ -140,123 +172,167 @@
                                 <th>Manager Emp Code</th>
                                 <th>Manager Name</th>
                                 <th>Manager Department</th>
+                                <th>Edit/Save/Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let managerlist of managersList ;let i = index;">
                                 <td>{{i+1}}</td>
                                 <td><span *ngIf="managerEditedIndex !== i">{{managerlist.empCode}}</span>
-                                    <input type="text" [(ngModel)]="managerlist.empCode" value={{managerlist.empCode}} *ngIf="managerEditedIndex===i"></td>
+                                    <input class="form-control" type="text" [(ngModel)]="managerlist.empCode" value={{managerlist.empCode}} *ngIf="managerEditedIndex===i"></td>
                                 <td><span *ngIf="managerEditedIndex !== i">{{managerlist.firstName}}</span>
-                                    <input type="text" [(ngModel)]="managerlist.firstName" value={{managerlist.firstName}} *ngIf="managerEditedIndex===i"></td>
+                                    <input class="form-control" type="text" [(ngModel)]="managerlist.firstName" value={{managerlist.firstName}} *ngIf="managerEditedIndex===i"></td>
                                 <td><span *ngIf="managerEditedIndex !== i">{{managerlist.dept}}</span>
-                                    <input type="text" [(ngModel)]="managerlist.dept" value={{managerlist.dept}} *ngIf="managerEditedIndex===i"></td>
+                                    <select class="form-control" [(ngModel)]="managerlist.dept" *ngIf="managerEditedIndex===i">
+                                        <option value="" disabled>--select--</option>
+                                       <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option>
+                                    </select>
+                                </td>
                                 <button *ngIf="managerEdit" (click)="managerListEdit(managerlist,i)" type="button" class="btn btn-default btn"><i class="glyphicon glyphicon-pencil"></i></button>
-                                <button *ngIf="managerEditedIndex === i && managerSave" (click)="managerListSave(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
-                                <button (click)="managerDelete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
+                                <button style="margin-top:10px" *ngIf="managerEditedIndex === i && managerSave" (click)="managerListSave(i)" type="submit"
+                                    class="btn btn-default btn"><i class="glyphicon glyphicon-ok"></i></button>
+                                <button style="margin-top:10px" *ngIf="managerEditedIndex === i && managerSave" (click)="managerListCancel(i)" type="submit"
+                                    class="btn btn-default btn"><i class="glyphicon glyphicon-remove"></i></button>
+                                <button *ngIf="managerDeleteIcon" (click)="managerDelete(i)" type="submit" class="btn btn-default btn"><i class="glyphicon glyphicon-trash"></i></button>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    <div class="modal fade" id="addOnsiteManager" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add New Onsite Manager</h4>
-                </div>
-                <div class="modal-body">
-                    <form name="onsmanagerform" #onsmanagerForm="ngForm" (ngSubmit)="onsmanagerForm.valid && addNewOnsiteManager(onsmanagerForm.value,onsmanagerForm)"
-                        novalidate>
-                        <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsnameRef.valid }">
-                            <label>Name</label>
-                            <input type="text" #onsnameRef="ngModel" required class="form-control" name="onsiteManagerName" ngModel>
-                            <span *ngIf="!onsnameRef.valid  && onsmanagerForm.submitted" class="help-block">
+        <div class="modal fade" id="addOnsiteManager" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Onsite Manager</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form name="onsmanagerform" #onsmanagerForm="ngForm" (ngSubmit)="onsmanagerForm.valid && addNewOnsiteManager(onsmanagerForm.value,onsmanagerForm)"
+                            novalidate>
+                            <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsnameRef.valid }">
+                                <label>Name</label>
+                                <input type="text" #onsnameRef="ngModel" required class="form-control" name="onsiteManagerName" ngModel>
+                                <span *ngIf="!onsnameRef.valid  && onsmanagerForm.submitted" class="help-block">
                                     Name is required
                                    </span>
-                        </div>
-                        <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsemailRef.valid }">
-                            <label>Email</label>
-                            <input type="text" #onsemailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
-                                name="onsiteManagerEmail" ngModel>
-                            <div *ngIf="onsemailRef.errors &&(onsemailRef.dirty)" class="alert alert-danger">
-                                <div [hidden]="!onsemailRef.errors.required">
-                                    please enter your email address
-                                </div>
-                                <div [hidden]="!onsemailRef.errors.pattern">
-                                    please enter valid email with '@' and '.'
-                                </div>
                             </div>
-                            <span *ngIf=" !onsemailRef.valid && onsmanagerForm.submitted" class="help-block">
+                            <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsemailRef.valid }">
+                                <label>Email</label>
+                                <input type="text" #onsemailRef="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" required class="form-control"
+                                    name="onsiteManagerEmail" ngModel>
+                                <div *ngIf="onsemailRef.errors &&(onsemailRef.dirty)" class="alert alert-danger">
+                                    <div [hidden]="!onsemailRef.errors.required">
+                                        please enter your email address
+                                    </div>
+                                    <div [hidden]="!onsemailRef.errors.pattern">
+                                        please enter valid email with '@' and '.'
+                                    </div>
+                                </div>
+                                <span *ngIf=" !onsemailRef.valid && onsmanagerForm.submitted" class="help-block">
                                     Email is required
                                    </span>
-                        </div>
-                        <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsdept.valid }">
-                            <label>Department</label>
-                            <select name="onsiteManagerDept" ngModel class="form-control" required #onsdept="ngModel">
+                            </div>
+                            <div class="form-group" [ngClass]="{ 'has-error': onsmanagerForm.submitted && !onsdept.valid }">
+                                <label>Department</label>
+                                <select name="onsiteManagerDept" ngModel class="form-control" required #onsdept="ngModel">
                                         <option value="" disabled>--select--</option>
-                                            <option value="QA">QA</option>
-                                            <option value="Dev">DEV</option>
-                                            <option value="IT">IT</option>
-                                            <option value="HRA/Admin">HRA/Admin</option>
-                                            <option value="Director">Director</option>
+                                        <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option>
                                          </select>
-                            <span *ngIf="!onsdept.valid && onsmanagerForm.submitted" class="help-block">
+                                <span *ngIf="!onsdept.valid && onsmanagerForm.submitted" class="help-block">
                                      Please select department
                                    </span>
-                        </div>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="addManager" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add New Manager</h4>
-                </div>
-                <div class="modal-body">
-                    <form name="managerform" #managerForm="ngForm" (ngSubmit)="managerForm.valid && addNewManager(managerForm.value,managerForm)"
-                        novalidate>
-                        <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !mangagerEmpRef.valid }">
-                            <label>Emp Code</label>
-                            <input type="text" #mangagerEmpRef="ngModel" required class="form-control" name="resourceManagerEmpCode" ngModel>
-                            <span *ngIf="!mangagerEmpRef.valid  && managerForm.submitted" class="help-block">
+        <div class="modal fade" id="addManager" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Manager</h4>
+                    </div>
+                    <div class="modal-body">
+                        <!--<form name="managerform" #managerForm="ngForm" (ngSubmit)="managerForm.valid && addNewManager(managerForm.value,managerForm)"
+                            novalidate>
+                            <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !mangagerEmpRef.valid }">
+                                <label>Emp Code</label>
+                                <input type="text" #mangagerEmpRef="ngModel" required class="form-control" name="resourceManagerEmpCode" ngModel>
+                                <span *ngIf="!mangagerEmpRef.valid  && managerForm.submitted" class="help-block">
                                     Emp code is required
                                    </span>
-                        </div>
-                        <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !managerNameRef.valid }">
-                            <label>Name</label>
-                            <input type="text" #managerNameRef="ngModel" required class="form-control" name="resourceManagerName" ngModel>
-                            <span *ngIf=" !managerNameRef.valid && managerForm.submitted" class="help-block">
+                            </div>
+                            <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !managerNameRef.valid }">
+                                <label>Name</label>
+                                <input type="text" #managerNameRef="ngModel" required class="form-control" name="resourceManagerName" ngModel>
+                                <span *ngIf=" !managerNameRef.valid && managerForm.submitted" class="help-block">
                                     Name is required
                                    </span>
-                        </div>
-                        <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !managerdept.valid }">
-                            <label>Department</label>
-                            <select name="resourceManagerDept" ngModel class="form-control" required #managerdept="ngModel">
+                            </div>
+                            <div class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !managerdept.valid }">
+                                <label>Department</label>
+                                <select name="resManagerDept" ngModel class="form-control" required #managerdept="ngModel" (change)="selectDeptChanged($event.target.value)">
                                         <option value="" disabled>--select--</option>
-                                            <option value="QA">QA</option>
-                                            <option value="Dev">DEV</option>
-                                            <option value="IT">IT</option>
-                                            <option value="HRA/Admin">HRA/Admin</option>
-                                            <option value="Director">Director</option>
+                                           <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option>
+                                            <option value="New">New Department</option>
                                          </select>
-                            <span *ngIf="!managerdept.valid && managerForm.submitted" class="help-block">
+                                <span *ngIf="!managerdept.valid && managerForm.submitted" class="help-block">
                                      Please select department
                                    </span>
-                        </div>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                            </div>
+                            <div *ngIf="newDept" class="form-group" [ngClass]="{ 'has-error': managerForm.submitted && !newManagerdept.valid }">
+                                <label>Department Name</label>
+                                <input type="text" #newManagerdept="ngModel" required class="form-control" name="resourceManagerDept" ngModel>
+                                <span *ngIf="!newManagerdept.valid && managerForm.submitted" class="help-block">
+                                     Please enter department name
+                                   </span>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>-->
+                        <form [formGroup]="managerform">
+                            <div class="form-group">
+                                <label>Emp Code</label>
+                                <input type="text" class="form-control" formControlName="resourceManagerEmpCode">
+                                <div style="color:red;" class="error" *ngIf="managerform.get('resourceManagerEmpCode').hasError('required') && managerform.get('resourceManagerEmpCode').touched">
+                                    Manager Emp Code is required
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" formControlName="resourceManagerName">
+                                <div style="color:red;" class="error" *ngIf="managerform.get('resourceManagerName').hasError('required') && managerform.get('resourceManagerName').touched">
+                                    Manager name is required
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Department</label>
+                                <select formControlName="resManagerDept" class="form-control" (change)="selectDeptChanged($event.target.value)">
+                                        <option value="" disabled>--select--</option>
+                                           <option *ngFor="let managers of managersList" value="{{managers.dept}}">{{managers.dept}}</option>
+                                            <option value="New">New Department</option>
+                                         </select>
+                                <div style="color:red;" class="error" *ngIf="managerform.get('resManagerDept').hasError('required') && managerform.get('resManagerDept').touched">
+                                    Please select department
+                                </div>
+                            </div>
+                            <div *ngIf="newDept" class="form-group">
+                                <label>Department Name</label>
+                                <input type="text" class="form-control" formControlName="resourceManagerDept" ngModel>
+                                <div style="color:red;" class="error" *ngIf="managerform.get('resourceManagerDept').hasError('required') && managerform.get('resourceManagerDept').touched">
+                                    Please enter department name
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" (click)="addNewManager()" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

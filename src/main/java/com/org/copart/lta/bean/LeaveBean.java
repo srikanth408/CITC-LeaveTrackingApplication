@@ -18,6 +18,47 @@ public class LeaveBean {
 	private int numOfCL;
 	private int numOfSL;
 	private int numOfPL;
+	private String department;
+	private String employeeEmail;
+	private String managerEmail;
+	private String onsiteManagerEmail;
+	
+	
+	
+	
+	
+
+	public String getEmployeeEmail() {
+		return employeeEmail;
+	}
+
+	public void setEmployeeEmail(String employeeEmail) {
+		this.employeeEmail = employeeEmail;
+	}
+
+	public String getManagerEmail() {
+		return managerEmail;
+	}
+
+	public void setManagerEmail(String managerEmail) {
+		this.managerEmail = managerEmail;
+	}
+
+	public String getOnsiteManagerEmail() {
+		return onsiteManagerEmail;
+	}
+
+	public void setOnsiteManagerEmail(String onsiteManagerEmail) {
+		this.onsiteManagerEmail = onsiteManagerEmail;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
 
 	public int getNumOfCL() {
 		return numOfCL;

@@ -6,6 +6,7 @@ import { SignupComponent } from './Admin/app.signup.component';
 import { EdituserComponent } from './Admin/app.edituser.component';
 import { AdminComponent } from './Admin/app.admin.component';
 import { SetPasswordComponent } from './Home/app.setpassword';
+import{ ExportLeavesComponent} from './Admin/app.export.leaves.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
     { path: 'signup', component: SignupComponent },
     { path: 'edit', component: EdituserComponent },
     { path:'setpassword',component:SetPasswordComponent},
+    { path:'exportLeaves',component:ExportLeavesComponent}
     
 
 ];
@@ -26,5 +28,6 @@ const routes: Routes = [
     exports: [RouterModule]
 })
 export class RoutingComponent { }
-export const routingModuleComponent = [LoginComponent, LeaveComponent,AdminComponent,EdituserComponent,SignupComponent,SetPasswordComponent]
+export const routingModuleComponent = [LoginComponent, LeaveComponent,AdminComponent,EdituserComponent,
+SignupComponent,SetPasswordComponent,ExportLeavesComponent]
 

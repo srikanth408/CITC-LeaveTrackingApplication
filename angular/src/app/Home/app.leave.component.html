@@ -3,6 +3,7 @@
     <li *ngIf="isAdmin && isManager"><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
     <li class="active"><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
     <li *ngIf="isAdmin && isManager"><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li *ngIf="isAdmin && isManager"><a routerLink="/exportLeaves" routerLinkActive="active">List of Leaves</a></li>
 </ul>
 <br>
 <div class="row">
@@ -95,6 +96,7 @@
                                     <option value="SL">Sick Leave</option>
                                     <option value="PL">Privilege Leave</option>
                                   </select>
+                                  <span style="color:red; font-size:14px;">{{pl_primary_error}}</span>
                             </div>
                         </div>
                         <div class="col-sm-6">

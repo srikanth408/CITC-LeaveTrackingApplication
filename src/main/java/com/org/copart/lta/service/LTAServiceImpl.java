@@ -7,6 +7,8 @@ import com.org.copart.lta.bean.LeaveBean;
 import com.org.copart.lta.bean.UserBean;
 import com.org.copart.lta.dao.LTADaoImpl;
 import com.org.copart.lta.exception.LTAppException;
+import com.org.copart.lta.service.impl.ApproveLeaveMailSender;
+import com.org.copart.lta.service.impl.AutoApproveMailsender;
 
 public class LTAServiceImpl {
 
@@ -24,8 +26,8 @@ public class LTAServiceImpl {
 	public int addOnsiteManager(UserBean user) throws SQLException {
 		return new LTADaoImpl().addOnsiteManager(user);
 	}
-	public int addManager(UserBean user) throws SQLException {
-		return new LTADaoImpl().addManager(user);
+	public int addManager(String resourceManagerName ,String resourceManagerDept,String resourceManagerEmpCode) throws SQLException {
+		return new LTADaoImpl().addManager(resourceManagerName,resourceManagerDept,resourceManagerEmpCode);
 	}
 	
 
@@ -66,7 +68,10 @@ public class LTAServiceImpl {
 	public List<LeaveBean> getApproveRejectList(String empId, String requestType) {
 		return new LTADaoImpl().getApproveRejectList(empId, requestType);
 	}
-
+	public List<LeaveBean> getAllLeaveList(String fromDate, String toDate) {
+		return new LTADaoImpl().getAllLeaveList(fromDate, toDate);
+	}
+	
 	public void setApproveRejectStatus(int reqId, String status) throws LTAppException {
 		 new LTADaoImpl().setApproveRejectStatus(reqId, status);
 	}
@@ -84,6 +89,26 @@ public class LTAServiceImpl {
 	}
 	public int editHolidayList(UserBean user) {
 		return new LTADaoImpl().editHolidayList(user);
+	}
+	
+	public void ApproveAllPendingSickLeave(){
+		//get all sick leaves using DAO method
+		List<LeaveBean> pendingSickLeaves = new LTADaoImpl().getAllPendingSL();
+		for(LeaveBean lv : pendingSickLeaves ){
+			this.setApproveRejectStatus(lv.getReqId(), "Approved");
+			
+			MailSender m = new AutoApproveMailsender();
+			m.sendMail(lv.getManagerEmail(), new String[] { lv.getEmployeeEmail()},	new String[] { lv.getOnsiteManagerEmail() }, lv, null);
+		
+			
+		}
+		
+		//iterate through them and call setApproveRejectStatus for all reqid
+		
+		//send mail to each leave request
+		
+		
+		
 	}
 	
 }

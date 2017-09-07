@@ -80,6 +80,9 @@ public class LTADaoImpl {
 		}
 		return ub;
 	}
+	
+	
+	
 
 	public int addUser(UserBean user) throws SQLException {
 		int status = 0;
@@ -124,15 +127,15 @@ public class LTADaoImpl {
 		}
 		return status;
 	}
-	public int addManager(UserBean user) throws SQLException {
+	public int addManager(String resourceManagerName ,String resourceManagerDept,String resourceManagerEmpCode) throws SQLException {
 		int status = 0;
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("INSERT INTO managerslist(Manager_name, Managers_Id, Department) VALUES(?,?,?)");
-			stmt.setString(1, user.getResourceManagerName());
-			stmt.setString(2, user.getResourceManagerEmpCode());
-			stmt.setString(3, user.getResourceManagerDept());
+					.prepareStatement("INSERT INTO managerslist(Manager_name, Department, Managers_Id) VALUES(?,?,?)");
+			stmt.setString(1,resourceManagerName);
+			stmt.setString(2,resourceManagerDept );
+			stmt.setString(3,resourceManagerEmpCode);
 			status = stmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -245,8 +248,8 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("DELETE FROM onsitemanagerslist WHERE OnsiteManager_name = ? ");
-			stmt.setString(1, user.getFirstName());
+					.prepareStatement("DELETE FROM onsitemanagerslist WHERE OnsiteManagers_Sno = ? ");
+			stmt.setString(1, user.getReqId());
 			status = stmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -258,8 +261,8 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("DELETE FROM managerslist WHERE Manager_name = ? ");
-			stmt.setString(1, user.getFirstName());
+					.prepareStatement("DELETE FROM managerslist WHERE Managers_Sno = ? ");
+			stmt.setString(1, user.getReqId());
 			status = stmt.executeUpdate();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -272,7 +275,7 @@ public class LTADaoImpl {
 		try {
 			Connection conn = DBConnection.getInstance().getConnInst();
 			PreparedStatement stmt = conn
-					.prepareStatement("SELECT * FROM employee");
+					.prepareStatement("SELECT * FROM employee order by empCode asc ");
 			ResultSet rs = stmt.executeQuery();
 			UserBean ub = null;
 			while (rs.next()) {
@@ -554,4 +557,73 @@ public class LTADaoImpl {
 		}
 		return status;
 	}
-}
+	public List<LeaveBean> getAllLeaveList(String fromDate, String toDate) {
+		List<LeaveBean> lbList = new ArrayList<>();
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			String query = "select concat_ws(' ',a.firstName,a.middleName,a.lastName ) as employeeName,a.dept as department,b.* from leaves b join employee a on a.empCode=b.employeeId WHERE status='Approved' and fromDate between ? and ? order by fromDate asc ";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			stmt.setString(1, fromDate);
+			stmt.setString(2, toDate);
+			ResultSet rs = stmt.executeQuery();
+			LeaveBean lb = null;
+			while (rs.next()) {
+				lb = new LeaveBean();
+				lb.setemployeeName(rs.getString("employeeName"));
+				lb.setDepartment(rs.getString("department"));
+				lb.setReqId(rs.getInt("requestId"));
+				lb.setEmpId(rs.getString("employeeId"));
+				lb.setFromDate(rs.getString("fromDate"));
+				lb.setToDate(rs.getString("toDate"));
+				lb.setStatus(rs.getString("status"));
+				lb.setReason(rs.getString("reason"));
+				lb.setApprover(rs.getString("approverId"));
+				lb.setLeaveType(rs.getString("leaveType"));
+				lb.setLeavesApplied(rs.getInt("leavesApplied"));
+				lbList.add(lb);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lbList;
+	}
+	
+	public List<LeaveBean> getAllPendingSL(){
+		List<LeaveBean> lbList = new ArrayList<>();
+		try {
+			Connection conn = DBConnection.getInstance().getConnInst();
+			String query = "select concat_ws(' ',a.firstName,a.lastName ) as employeeName,a.CL,a.SL,a.PL,a.email as employeeEmail,b.requestId,b.employeeId,b.fromDate,b.toDate,b.status,b.reason,b.approverId,b.leaveType,b.leavesApplied, concat_ws(' ',c.firstName,c.lastName ) as managerName,c.email as managerEmail,d.Onsitemanagers_Email as onsiteManagerEmail from leaves b join employee a on a.empCode=b.employeeId JOIN employee c on b.approverId = c.empCode join onsitemanagerslist d on d.OnsiteManager_name=a.onsiteManagerId WHERE leaveType='SL' and status='Pending' ";
+			PreparedStatement stmt = conn.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			LeaveBean lb = null;
+			while (rs.next()) {
+				lb = new LeaveBean();
+				lb.setemployeeName(rs.getString("employeeName"));
+				lb.setNumOfCL(rs.getInt("CL"));
+				lb.setNumOfSL(rs.getInt("SL"));
+				lb.setNumOfPL(rs.getInt("PL"));
+				lb.setEmployeeEmail(rs.getString("employeeEmail"));
+				lb.setReqId(rs.getInt("requestId"));
+				lb.setEmpId(rs.getString("employeeId"));
+				lb.setFromDate(rs.getString("fromDate"));
+				lb.setToDate(rs.getString("toDate"));
+				lb.setStatus(rs.getString("status"));
+				lb.setReason(rs.getString("reason"));
+				lb.setApprover(rs.getString("approverId"));
+				lb.setLeaveType(rs.getString("leaveType"));
+				lb.setLeavesApplied(rs.getInt("leavesApplied"));
+				lb.setresourceManager(rs.getString("managerName"));
+				lb.setManagerEmail(rs.getString("managerEmail"));
+				lb.setOnsiteManagerEmail(rs.getString("onsiteManagerEmail"));
+				lbList.add(lb);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lbList;
+	}
+	
+	}
+

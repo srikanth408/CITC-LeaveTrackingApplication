@@ -13,14 +13,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Ng2FilterPipeModule } from 'ng2-filter-pipe';
 import { MyDatePickerModule } from 'mydatepicker';
 import { PasswordInputComponent} from './Home/app.password-input';
+import { ReactiveFormsModule } from '@angular/forms';
+import{ExporttoexcelComponent} from './Home/app.exporttoexcel.component';
 
 
 
 
 @NgModule({
   imports: [BrowserModule, RoutingComponent, FormsModule, HttpModule,BrowserAnimationsModule,ToasterModule,Ng2FilterPipeModule,
-  MyDatePickerModule],
-  declarations: [AppComponent, routingModuleComponent,PasswordInputComponent],
+  MyDatePickerModule,ReactiveFormsModule],
+  declarations: [AppComponent, routingModuleComponent,PasswordInputComponent,ExporttoexcelComponent],
   bootstrap: [AppComponent],
   providers: [EmpDataService, EmployeedataService]
 })

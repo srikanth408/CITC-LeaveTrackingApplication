@@ -108,9 +108,12 @@ public class LTAController {
 	@Path("/addManager")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public LTAResponseDTO<UserBean> addManager(UserBean newUser) throws SQLException {
+	public LTAResponseDTO<UserBean> addManager(
+			@QueryParam("resourceManagerName") String resourceManagerName,
+			@QueryParam("resourceManagerDept") String resourceManagerDept,
+			@QueryParam("resourceManagerEmpCode") String resourceManagerEmpCode) throws SQLException {
 		LTAServiceImpl service = new LTAServiceImpl();
-		int status = new LTAServiceImpl().addManager(newUser);
+		int status = new LTAServiceImpl().addManager(resourceManagerName,resourceManagerDept,resourceManagerEmpCode);
 		LTAResponseDTO<UserBean> ubRes = new LTAResponseDTO<>();
 		if (status > 0) {
 			ubRes.setHeader("Ok");
@@ -376,6 +379,16 @@ public class LTAController {
 			lb.setHeader("Failed");
 		}
 	    return lb;
+	}
+	@GET
+	@Path("/listAllLeavesApplied")
+	@Produces(MediaType.APPLICATION_JSON)
+	public LTAResponseDTO<List<LeaveBean>> getAllListLeavesApplied(
+			@QueryParam("fromDate") String fromDate,
+			@QueryParam("toDate") String toDate) {
+		LTAResponseDTO<List<LeaveBean>> userList = new LTAResponseDTO<>();
+		userList.setBody(new LTAServiceImpl().getAllLeaveList(fromDate, toDate));
+		return userList;
 	}
 
 }

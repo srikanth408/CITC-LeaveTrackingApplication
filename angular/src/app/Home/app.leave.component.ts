@@ -34,6 +34,7 @@ export class LeaveComponent {
     public totleavesOfCL;
     public totleavesOfSL;
     public totleavesOfPL;
+    pl_primary_error:any;
 
     constructor(public routes: Router,
         public _service: EmployeedataService,
@@ -138,7 +139,7 @@ export class LeaveComponent {
     get isAdmin() {
         return this.empDataSr.isAdmin;
     }
-     get isManager() {
+    get isManager() {
         return this.empDataSr.isManager;
     }
     /*get isMainAdmin() {
@@ -156,12 +157,17 @@ export class LeaveComponent {
         var fromdate = new Date(_fromdate);
         var todate = new Date(_todate);
 
+
         let date1_unixtime = fromdate.getTime() / 1000;
         let date2_unixtime = todate.getTime() / 1000;
         var timeDifference = date2_unixtime - date1_unixtime;
         var timeDifferenceInHours = timeDifference / 60 / 60;
         var timeDifferenceInDays = timeDifferenceInHours / 24 + 1;
-
+        today = new Date();
+        let toTime = today.getTime() / 1000;
+        var difference_todate_fromdate = date1_unixtime - toTime;
+        var difference_todate_fromdate_InHours = difference_todate_fromdate / 60 / 60;
+        var difference_todate_fromdate_InDays = difference_todate_fromdate_InHours / 24 + 1;
 
 
 
@@ -225,6 +231,18 @@ export class LeaveComponent {
             this.valid = false;
         }
 
+        if (leavetype === "PL" && difference_todate_fromdate_InDays<7) {
+                   this.pl_primary_error =" * PL Should be applied before a week" ;
+                    this.valid = true;            
+        }
+        else if ((leavetype === "CL" || leavetype === "SL" || leavetype === "PL")  && difference_todate_fromdate_InDays<-7 ){
+            this.pl_primary_error ="* leaves should be applied with in a week";
+             this.valid = true; 
+        }
+        else{
+             this.pl_primary_error ="";
+             this.valid = false; 
+        }
 
     }
 

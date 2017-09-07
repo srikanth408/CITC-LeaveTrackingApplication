@@ -1,0 +1,71 @@
+<ul class="nav nav-tabs">
+    <li><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
+    <li><a routerLink="/signup" routerLinkActive="active">Add User</a></li>
+    <li><a routerLink="/leave" routerLinkActive="active">Apply Leave</a></li>
+    <li><a routerLink="/edit" routerLinkActive="active">Edit User</a></li>
+    <li class="active"><a routerLink="/exportLeaves" routerLinkActive="active">List of Leaves</a></li>
+</ul>
+<br>
+<div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Welcome to employee's leave history</div>
+        <div class="panel-body">
+            <form #exportLeaveHistory="ngForm" (ngSubmit)="onSubmitExportLeaveHistory(exportLeaveHistory.value,exportLeaveHistory)" novalidate>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div>
+                                    <label>From Date: </label>
+                                    <my-date-picker [options]="myDatePickerOptions" ngModel name="fromDate" required [(ngModel)]="exportLeave.fromdate" (dateChanged)="onDateChange($event, 'F')"></my-date-picker>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <label>To Date: </label><span style="color:red; font-size:14px;">{{export_todate_errorMsg}}</span>
+                                    <my-date-picker [options]="myDatePickerOptions" ngModel name="toDate" required [(ngModel)]="exportLeave.todate" (dateChanged)="onDateChange($event, 'T')"></my-date-picker>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <button [disabled]="!exportLeaveHistory.form.valid || exportDateValid" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">Leave history <span class="pull-right"><export-to-excel [data]="monthlyLeaveHistory"></export-to-excel></span></div>
+            <div class="panel-body table-responsive mytable">
+                <table class="table table-striped ">
+                    <thead>
+                        <tr>
+                            <th>Employee Id</th>
+                            <th>Employee Name</th>
+                            <th>Fromdate</th>
+                            <th>Todate</th>
+                            <th>leaveType</th>
+                            <th>leavesApplied</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of monthlyLeaveHistory">
+                            <td>{{item.empId}}</td>
+                            <td>{{item.employeeName}}</td>
+                            <td>{{item.fromDate}}</td>
+                            <td>{{item.toDate}}</td>
+                            <td>{{item.leaveType}}</td>
+                            <td>{{item.leavesApplied}}</td>
+                            <td style="table-layout:fixed;width:25%;">{{item.reason}}</td>
+                            <td>{{item.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
